@@ -367,7 +367,15 @@ function LeadForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    const res = await fetch("/api/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, tier }),
+    });
 
+    const data = await res.json();
+    console.log("Response:", data);
+    return
     try {
       // 1) Send lead to your CRM (fire-and-forget)
       fetch(CONFIG.crmEndpoint, {
