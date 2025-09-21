@@ -68,7 +68,7 @@ export default function BootcampPage() {
             variants={fadeUp}
             className="text-4xl sm:text-5xl font-extrabold tracking-tight"
           >
-            Master the Art of Trading Strategy Development & Deployment
+            Algorithmic Trading Systems Architecture: From Design to Execution
           </motion.h1>
           <p className="mt-3 text-slate-600 text-sm" aria-live="polite">
             {CONFIG.cohortDates}
@@ -77,13 +77,13 @@ export default function BootcampPage() {
             Day 3 Venue: {CONFIG.location}
           </p>
           <p className="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">
-            Turn your ideas into live, automated trading systems. Over three
-            days, gain hands‑on experience in strategy design, backtesting, risk
-            management, and deployment—guided by industry experts and mentors.
+            Turn your trading ideas into live, automated systems. 
+            In just three weeks, gain hands-on experience in strategy design, 
+            backtesting, risk management, and deployment—guided every step by industry experts.
           </p>
           <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
             <button
-              className={`${THEME.btnPrimary} h-12 rounded-xl px-6`}
+              className="bg-[#CCA435] hover:bg-[#E5E5E5] text-white h-12 rounded-xl px-6"            
               onClick={() =>
                 document
                   .getElementById("cohort")
@@ -93,14 +93,14 @@ export default function BootcampPage() {
             >
               Reserve My Spot
             </button>
-            <button
+            {/* <button
               className="h-12 rounded-xl px-6"
               aria-label="Download program outline"
             >
               Download Outline
-            </button>
+            </button> */}
           </div>
-          <div
+          {/* <div
             className="mt-8 flex items-center justify-center gap-6 text-sm text-slate-600"
             role="list"
           >
@@ -112,7 +112,7 @@ export default function BootcampPage() {
               <MapPin className="size-4" aria-hidden /> Day 3: Physical
               (Premium)
             </span>
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -201,14 +201,15 @@ export default function BootcampPage() {
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-3xl font-bold text-center">Program Timeline</h2>
           <p className="mt-2 text-center text-slate-600">
-            Three focused days—virtual foundations, design & testing, then
-            in‑person deployment.
+            From market fundamentals to live execution, 
+            this three-week bootcamp transforms trading ideas into real, 
+            automated systems.
           </p>
 
           <div className="mt-10 grid lg:grid-cols-3 gap-6">
             <DayCard
               day="Day 1"
-              mode="Virtual"
+              mode=""
               title="Foundations"
               objective="Build your foundation in trading systems and quant finance."
               highlights={[
@@ -220,7 +221,7 @@ export default function BootcampPage() {
             />
             <DayCard
               day="Day 2"
-              mode="Virtual"
+              mode=""
               title="Strategy Design & Testing"
               objective="Equip participants with quant tools and backtesting skills."
               highlights={[
@@ -233,7 +234,7 @@ export default function BootcampPage() {
             />
             <DayCard
               day="Day 3"
-              mode={`Physical (Premium) · ${CONFIG.location}`}
+              mode=""
               title="Advanced Deployment & Networking"
               objective="Gain real‑world deployment skills with mentorship and peer networking."
               highlights={[
@@ -304,9 +305,9 @@ export default function BootcampPage() {
             Experience expert mentorship, hands‑on projects, and real deployment
             in one intensive bootcamp.
           </p>
-          <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+          {/* <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
             <button
-              className={`${THEME.btnPrimary} h-12 rounded-xl px-6`}
+              className={`bg-[#CCA435] hover:bg-[#E5E5E5] text-white h-12 rounded-xl px-6`}
               onClick={() =>
                 document
                   .getElementById("cohort")
@@ -318,7 +319,7 @@ export default function BootcampPage() {
             <button className="h-12 rounded-xl px-6">
               Speak to an Advisor
             </button>
-          </div>
+          </div> */}
           <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm text-slate-600">
             <span className="inline-flex items-center gap-2">
               <CheckCircle2 className="size-4" aria-hidden />{" "}
@@ -330,7 +331,7 @@ export default function BootcampPage() {
             </span>
             <span className="inline-flex items-center gap-2">
               <CheckCircle2 className="size-4" aria-hidden />{" "}
-              <span>Certification</span>
+              <span>Community</span>
             </span>
           </div>
         </div>
@@ -369,8 +370,8 @@ export default function BootcampPage() {
           <div>
             <div className="font-semibold">Resources</div>
             <ul className="mt-2 space-y-1 text-slate-600">
-              <li>FAQ</li>
-              <li>Policies</li>
+              {/* <li>FAQ</li>
+              <li>Policies</li> */}
               <li>Contact</li>
             </ul>
           </div>
@@ -380,6 +381,7 @@ export default function BootcampPage() {
               <li>LinkedIn</li>
               <li>Twitter</li>
               <li>YouTube</li>
+              <li>Discord</li>
             </ul>
           </div>
         </div>
@@ -424,7 +426,7 @@ function HeaderNav() {
           </a>
         </nav>
         <div className="flex items-center gap-3">
-          <button className="hidden sm:inline-flex" aria-label="Sign in">
+          {/* <button className="hidden sm:inline-flex" aria-label="Sign in">
             Sign in
           </button>
           <button
@@ -432,7 +434,7 @@ function HeaderNav() {
             aria-label="Get started"
           >
             Get Started
-          </button>
+          </button> */}
         </div>
       </div>
     </header>
@@ -526,7 +528,7 @@ function LeadForm() {
         We’ll reach out within one business day with next steps.
       </p>
       <form
-        className="mt-4 grid sm:grid-cols-4 gap-3"
+        className="mt-4 grid gap-3"
         onSubmit={handleSubmit}
         noValidate
       >
@@ -561,7 +563,7 @@ function LeadForm() {
           </option>
         </select>
         <button
-          className={`${THEME.btnPrimary} h-12 rounded-xl`}
+          className={`bg-[#CCA435] hover:bg-[#E5E5E5] text-white h-12 rounded-xl`}
           type="submit"
           disabled={loading}
           aria-live="polite"
@@ -633,7 +635,7 @@ function DayCard({
   highlights,
 }: {
   day: string;
-  mode: string;
+  mode?: string;
   title: string;
   objective: string;
   highlights: string[];
@@ -645,9 +647,9 @@ function DayCard({
           <div className="font-semibold">
             {day} · {title}
           </div>
-          <span className="text-xs rounded-full border px-3 py-1 bg-white">
+          {/* <span className="text-xs rounded-full border px-3 py-1 bg-white">
             {mode}
-          </span>
+          </span> */}
         </div>
       </CardHeader>
       <CardContent className="pt-6 text-slate-700 text-sm">
