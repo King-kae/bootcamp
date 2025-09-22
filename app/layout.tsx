@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import logo from "../public/la-logo.png"; // <-- keep your logo import
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -24,6 +25,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Favicon using your logo */}
+        <link rel="icon" href="/la-logo-d.png" type="image/png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

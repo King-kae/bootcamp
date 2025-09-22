@@ -3,6 +3,7 @@ import React from "react";
 
 import { motion } from "framer-motion";
 // import { Button } from "@/components/ui/button";
+import { Camera, Calendar, SquareUserRound } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   CalendarDays,
@@ -24,7 +25,7 @@ import {
  * Update these values only—no code changes needed elsewhere
  */
 export const CONFIG = {
-  cohortDates: "September 18–20, 2025",
+  cohortDates: "September, 2025",
   location: "Lagos, Nigeria",
   paystackPublicKey: "pk_test_9405bb5ba60bbb0fc4f0b84ceb61b351829ed698", // TODO: replace with your real key
   crmEndpoint: "/api/leads", // TODO: point to your CRM endpoint
@@ -73,17 +74,18 @@ export default function BootcampPage() {
           <p className="mt-3 text-slate-600 text-sm" aria-live="polite">
             {CONFIG.cohortDates}
           </p>
-          <p className="text-slate-600 text-sm">
+          {/* <p className="text-slate-600 text-sm">
             Day 3 Venue: {CONFIG.location}
-          </p>
+          </p> */}
           <p className="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">
-            Turn your trading ideas into live, automated systems. 
-            In just three weeks, gain hands-on experience in strategy design, 
-            backtesting, risk management, and deployment—guided every step by industry experts.
+            Turn your trading ideas into live, automated systems. In just three
+            weeks, gain hands-on experience in strategy design, backtesting,
+            risk management, and deployment—guided every step by industry
+            experts.
           </p>
           <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
             <button
-              className="bg-[#CCA435] hover:bg-[#E5E5E5] text-white h-12 rounded-xl px-6"            
+              className="bg-[#CCA435] hover:bg-[#E5E5E5] hover:text-[#CCA435] text-white h-12 rounded-xl px-6"
               onClick={() =>
                 document
                   .getElementById("cohort")
@@ -201,47 +203,45 @@ export default function BootcampPage() {
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-3xl font-bold text-center">Program Timeline</h2>
           <p className="mt-2 text-center text-slate-600">
-            From market fundamentals to live execution, 
-            this three-week bootcamp transforms trading ideas into real, 
-            automated systems.
+            From market fundamentals to live execution, this three-week bootcamp
+            transforms trading ideas into real, automated systems.
           </p>
 
           <div className="mt-10 grid lg:grid-cols-3 gap-6">
             <DayCard
-              day="Day 1"
+              day="Week 1"
               mode=""
-              title="Foundations"
-              objective="Build your foundation in trading systems and quant finance."
+              title="Foundations of Global Financial Markets"
+              objective="Understand market structures, participants, and career opportunities in trading."
               highlights={[
                 "Evolution of Trading Systems",
-                "Career Pathways",
-                "Core Concepts",
-                "Basic Strategies",
+                "Welcome to the Financial Markets",
+                "Key Market Players and Operators",
+                "Career Pathways in Today’s Quant Trading Industry",
               ]}
             />
             <DayCard
-              day="Day 2"
+              day="Week 2"
               mode=""
-              title="Strategy Design & Testing"
-              objective="Equip participants with quant tools and backtesting skills."
+              title="Designing and Coding Trading Strategies"
+              objective="Learn to design strategies, define edges, and code in Pine Script."
               highlights={[
-                "Strategy Design Framework",
-                "Intro to Quant Tools",
-                "Live Demo",
-                "Backtesting & Metrics",
-                "Leading Alpha Strategy Showcase",
+                "Basic Strategy Design Framework",
+                "Developing a Strategy with a Trading Edge",
+                "Pine Script Programming Language",
+                "Live Coding – Multi-Timeframe Trading Indicator",
               ]}
             />
             <DayCard
-              day="Day 3"
+              day="Week 3"
               mode=""
-              title="Advanced Deployment & Networking"
-              objective="Gain real‑world deployment skills with mentorship and peer networking."
+              title="Backtesting, Optimization, and Live Deployment"
+              objective="Test strategies, refine them, and deploy live with confidence."
               highlights={[
-                "Panel Discussion",
-                "Advanced Workshop",
-                "Deploy Live Strategies",
-                "Mentorship & Networking",
+                "Fundamentals of Strategy Backtesting",
+                "Strategy Optimization Framework",
+                "Live Coding – Backtesting Trading Strategy",
+                "Live Deployment with PineConnector",
               ]}
             />
           </div>
@@ -255,37 +255,74 @@ export default function BootcampPage() {
           <div className="mt-10 grid sm:grid-cols-2 gap-6">
             <Card className="rounded-2xl">
               <CardHeader>
-                <CardTitle>Dates & Format</CardTitle>
+                <div className="flex items-center gap-3 text-slate-700">
+                  <Calendar color="gold" size={20} /><CardTitle>Schedule</CardTitle>
+                </div>
               </CardHeader>
               <CardContent className="text-slate-600 text-sm space-y-2">
                 <p>
+                  <span className="font-medium text-slate-800">Duration:</span>{" "}
+                  <em>3 weeks</em>
+                </p>
+                <div>
                   <span className="font-medium text-slate-800">
-                    Next Cohort:
-                  </span>{" "}
-                  <em>{CONFIG.cohortDates}</em>
+                    Learning Flow:
+                  </span>
+                  <ul>
+                    <li className="ml-4 list-disc">
+                      <span className="font-medium text-slate-800">
+                        Weekdays:
+                      </span>
+                      Self-paced learning on LMS (videos, exercises, coding
+                      labs).
+                    </li>
+                    <li className="ml-4 list-disc">
+                      <span className="font-medium text-slate-800">
+                        Weekends:
+                      </span>
+                      Live revision workshops, Q&A, and peer discussions.
+                    </li>
+                  </ul>
+                </div>
+                <p>
+                  <span className="font-medium text-slate-800">Delivery Mode:</span>{" "}
+                  Virtual
                 </p>
                 <p>
-                  <span className="font-medium text-slate-800">Format:</span> 2
-                  Days Virtual + 1 Day Physical (Premium)
-                </p>
-                <p>
-                  <span className="font-medium text-slate-800">Schedule:</span>{" "}
-                  Evenings & Weekend‑friendly
+                  <span className="font-medium text-slate-800">Commitment:</span>{" "}
+                  6-8 hours per week
                 </p>
               </CardContent>
             </Card>
 
             <Card className="rounded-2xl">
               <CardHeader>
-                <CardTitle>Application Process</CardTitle>
+                <div className="flex items-center gap-3 text-slate-700">
+                  <SquareUserRound color="blue" size={20} />
+                  <CardTitle>Who This Is For</CardTitle>
+                </div>
               </CardHeader>
               <CardContent className="text-slate-600 text-sm space-y-3">
-                <Step num="1" text="Register online" />
+                {/* <Step num="1" text="Register online" />
                 <Step num="2" text="Complete the onboarding assessment" />
                 <Step num="3" text="Confirm payment to secure your seat" />
                 <div className="mt-2 text-xs text-slate-500">
                   Premium Day 3 happens in {CONFIG.location}. Limited seats.
-                </div>
+                </div> */}
+                <ul>
+                  <li className="ml-4 list-disc">
+                    Aspiring <b>quant traders & system developers</b>
+                  </li>
+                  <li className="ml-4 list-disc">
+                    <b>Retail traders</b> ready to trade systematically
+                  </li>
+                  <li className="ml-4 list-disc">
+                    <b>Finance professionals</b> moving into algo trading
+                  </li>
+                  <li className="ml-4 list-disc">
+                    <b>Students & enthusiasts</b> exploring fintech and trading
+                  </li>
+                </ul>
               </CardContent>
             </Card>
           </div>
@@ -527,11 +564,8 @@ function LeadForm() {
       <p className="mt-1 text-slate-600 text-sm">
         We’ll reach out within one business day with next steps.
       </p>
-      <form
-        className="mt-4 grid gap-3"
-        onSubmit={handleSubmit}
-        noValidate
-      >
+
+      <form className="mt-4 grid gap-3" onSubmit={handleSubmit} noValidate>
         <input
           aria-label="Full name"
           value={name}
@@ -563,7 +597,7 @@ function LeadForm() {
           </option>
         </select>
         <button
-          className={`bg-[#CCA435] hover:bg-[#E5E5E5] text-white h-12 rounded-xl`}
+          className={`bg-[#CCA435] hover:bg-[#E5E5E5] hover:text-[#CCA435] text-white h-12 rounded-xl`}
           type="submit"
           disabled={loading}
           aria-live="polite"
