@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import logo from "../public/la-logo.png"; // <-- keep your logo import
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+// import Script from "next/script";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        {/* <Script
+          src="https://js.paystack.co/v1/inline.js"
+          strategy="afterInteractive"
+        /> */}
       </body>
     </html>
   );

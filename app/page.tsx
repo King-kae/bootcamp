@@ -3,7 +3,7 @@ import React from "react";
 
 import { motion } from "framer-motion";
 // import { Button } from "@/components/ui/button";
-import { Camera, Calendar, SquareUserRound } from 'lucide-react';
+import { Camera, Calendar, SquareUserRound } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   CalendarDays,
@@ -19,6 +19,15 @@ import {
   MonitorSmartphone,
   MapPin,
 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { getAllOptions } from "@/libs/apiCalls";
+import ReservationForm from "@/components/ReservationForm";
+import dynamic from "next/dynamic";
+import type { Option } from "@/libs/apiCalls";
+import logo from "@/public/Full-logo.png"
+import logo2 from "@/public/LA.jpg"
+import Image from "next/image";
 
 /**
  * CONFIGURATION & THEME
@@ -30,9 +39,17 @@ export const CONFIG = {
   paystackPublicKey: "pk_test_9405bb5ba60bbb0fc4f0b84ceb61b351829ed698", // TODO: replace with your real key
   crmEndpoint: "/api/leads", // TODO: point to your CRM endpoint
   pricing: {
-    basic: 75_000, // NGN (virtual only)
-    premium: 150_000, // NGN (includes Day 3 physical)
+    basic: 150_000, // NGN (virtual only)
+    premium: 200_000, // NGN (includes Day 3 physical)
   },
+};
+
+type FormData = {
+  name: string;
+  email: string;
+  tier: string; // tier name or id
+  amount: number; // actual price
+  paid: boolean;
 };
 
 export const THEME = {
@@ -48,6 +65,7 @@ const fadeUp = {
 const stagger = {
   show: { transition: { staggerChildren: 0.08 } },
 };
+const options = await getAllOptions();
 
 export default function BootcampPage() {
   return (
@@ -256,7 +274,8 @@ export default function BootcampPage() {
             <Card className="rounded-2xl">
               <CardHeader>
                 <div className="flex items-center gap-3 text-slate-700">
-                  <Calendar color="gold" size={20} /><CardTitle>Schedule</CardTitle>
+                  <Calendar color="gold" size={20} />
+                  <CardTitle>Schedule</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="text-slate-600 text-sm space-y-2">
@@ -285,11 +304,15 @@ export default function BootcampPage() {
                   </ul>
                 </div>
                 <p>
-                  <span className="font-medium text-slate-800">Delivery Mode:</span>{" "}
+                  <span className="font-medium text-slate-800">
+                    Delivery Mode:
+                  </span>{" "}
                   Virtual
                 </p>
                 <p>
-                  <span className="font-medium text-slate-800">Commitment:</span>{" "}
+                  <span className="font-medium text-slate-800">
+                    Commitment:
+                  </span>{" "}
                   6-8 hours per week
                 </p>
               </CardContent>
@@ -326,9 +349,8 @@ export default function BootcampPage() {
               </CardContent>
             </Card>
           </div>
-
           {/* Lead form */}
-          <LeadForm />
+          <LeadForm options={options} />;
         </div>
       </section>
 
@@ -442,8 +464,9 @@ function HeaderNav() {
           href="#top"
           className="font-extrabold tracking-tight text-xl"
           aria-label="Leading Alpha Home"
-        >
-          Leading <span className="text-slate-700">Alpha</span>
+        > 
+          <Image src={logo} alt="Leading Alpha Logo" width={60} height={60} />
+          {/* Leading <span className="text-slate-700">Alpha</span> */}
         </a>
         <nav
           className="hidden md:flex items-center gap-8 text-sm"
@@ -478,13 +501,24 @@ function HeaderNav() {
   );
 }
 
-function LeadForm() {
+function LeadForm({ options }: { options: Option[] }) {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [tier, setTier] = React.useState<"basic" | "premium">("premium");
   const [loading, setLoading] = React.useState(false);
-
   const amountNGN = CONFIG.pricing[tier];
+
+  const getAllOptions = async () => {
+    try {
+      const response = await axios.get("/api/options");
+      console.log(response.data, "response.data");
+    } catch {
+      console.log("Error fetching options");
+    }
+  };
+  React.useEffect(() => {
+    getAllOptions();
+  }, []);
 
   // Load Paystack inline script (client-side only)
   React.useEffect(() => {
@@ -497,66 +531,72 @@ function LeadForm() {
     }
   }, []);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    const res = await fetch("/api/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, tier }),
-    });
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>();
 
-    const data = await res.json();
-    console.log("Response:", data);
-    // return
+  const onSubmit = async (data: FormData) => {
+    console.log(data, "data");
+    setLoading(true);
     try {
       // 1) Send lead to your CRM (fire-and-forget)
-      fetch(CONFIG.crmEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          tier,
-          amount: amountNGN,
-          cohort: CONFIG.cohortDates,
-          location: CONFIG.location,
-        }),
-      }).catch(() => {});
+      const [tier, amountStr] = data.tier.split("|");
+      const amount = Number(amountStr);
+      const response = await axios.post("/api/users", {
+        name: data.name,
+        email: data.email,
+        tier,
+        amount,
+        paid: false,
+      });
 
+      console.log("Saved lead:", response);
+      const userId = response?.data?._id || response?.data?.id;
       // 2) Trigger Paystack Inline if key & script are present
       const paystack =
         (typeof window !== "undefined" && (window as any).PaystackPop) || null;
       if (paystack && CONFIG.paystackPublicKey) {
         const handler = paystack.setup({
           key: CONFIG.paystackPublicKey,
-          email,
-          amount: amountNGN * 100, // kobo
+          email: data.email,
+          amount: amount * 100, // kobo
           currency: "NGN",
           ref: `LA-BC-${Date.now()}`,
-          callback: function () {
-            alert("Payment successful! We'll email next steps.");
-            setName("");
-            setEmail("");
-            setTier("premium");
+          callback: function (response: any) {
+            // wrap async logic inside an IIFE
+            (async () => {
+              try {
+                await axios.post("/api/users/confirm", {
+                  userId,
+                  ref: response.reference,
+                });
+
+                alert("Payment successful! We'll email next steps.");
+                reset(); // clear form
+              } catch (err) {
+                console.error(err);
+                alert(
+                  "We received your payment, but verification failed. Please contact support."
+                );
+              }
+            })();
           },
           onClose: function () {
             console.log("Paystack modal closed");
+            console.log(handler, "handler");
           },
         });
+
         handler.openIframe();
-      } else {
-        alert(
-          "Thanks! We'll contact you shortly to finalize your reservation."
-        );
       }
     } catch (err) {
       console.error(err);
       alert("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="mt-10 rounded-3xl border border-gray-200 p-6 text-center">
@@ -565,44 +605,85 @@ function LeadForm() {
         We’ll reach out within one business day with next steps.
       </p>
 
-      <form className="mt-4 grid gap-3" onSubmit={handleSubmit} noValidate>
-        <input
-          aria-label="Full name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Full name"
-          className="h-12 rounded-xl border border-gray-200 px-3"
-          required
-        />
-        <input
-          type="email"
-          aria-label="Email address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email address"
-          className="h-12 rounded-xl border border-gray-200 px-3"
-          required
-        />
-        <select
-          aria-label="Select tier"
-          value={tier}
-          onChange={(e) => setTier(e.target.value as "basic" | "premium")}
-          className="h-12 rounded-xl border border-gray-200 px-3"
-        >
-          <option value="premium">
-            Premium (All 3 Days) — ₦{CONFIG.pricing.premium.toLocaleString()}
-          </option>
-          <option value="basic">
-            Basic (Virtual Only) — ₦{CONFIG.pricing.basic.toLocaleString()}
-          </option>
-        </select>
+      <form
+        className="mt-4 grid gap-3"
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+      >
+        {/* Full name */}
+        <div>
+          <input
+            aria-label="Full name"
+            placeholder="Full name"
+            className="h-12 w-full rounded-xl border border-gray-200 px-3"
+            {...register("name", { required: "Full name is required" })}
+          />
+          {errors.name && (
+            <p className="mt-1 text-left text-sm text-red-600">
+              {errors.name.message}
+            </p>
+          )}
+        </div>
+
+        {/* Email */}
+        <div>
+          <input
+            type="email"
+            aria-label="Email address"
+            placeholder="Email address"
+            className="h-12 w-full rounded-xl border border-gray-200 px-3"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Enter a valid email address",
+              },
+            })}
+          />
+          {errors.email && (
+            <p className="mt-1 text-left text-sm text-red-600">
+              {errors.email.message}
+            </p>
+          )}
+        </div>
+
+        {/* Tier select */}
+        <div>
+          <select
+            aria-label="Select tier"
+            className="h-12 w-full rounded-xl border border-gray-200 px-3"
+            {...register("tier", { required: "Please select a tier" })}
+            defaultValue=""
+          >
+            <option value="" disabled>
+              -- Select a tier --
+            </option>
+            {options.map((option) => (
+              <option
+                key={option._id}
+                value={`${option.name}|${option.amount}`}
+                disabled={!option.available}
+              >
+                {option.name} — ₦{Number(option.amount).toLocaleString()}
+                {!option.available ? " (Sold out)" : ""}
+              </option>
+            ))}
+          </select>
+          {errors.tier && (
+            <p className="mt-1 text-left text-sm text-red-600">
+              {errors.tier.message}
+            </p>
+          )}
+        </div>
+
+        {/* Submit button */}
         <button
-          className={`bg-[#CCA435] hover:bg-[#E5E5E5] hover:text-[#CCA435] text-white h-12 rounded-xl`}
+          className="bg-[#CCA435] hover:bg-[#E5E5E5] hover:text-[#CCA435] text-white h-12 rounded-xl transition"
           type="submit"
-          disabled={loading}
+          disabled={isSubmitting}
           aria-live="polite"
         >
-          {loading ? "Processing…" : "Reserve & Pay"}
+          {isSubmitting ? "Processing…" : "Reserve & Pay"}
         </button>
       </form>
       <p className="mt-2 text-xs text-slate-500">
