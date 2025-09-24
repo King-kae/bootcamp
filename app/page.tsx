@@ -15,24 +15,19 @@ import {
   Users,
   Rocket,
   CheckCircle2,
-  ChevronRight,
-  MonitorSmartphone,
-  MapPin,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { getAllOptions } from "@/libs/apiCalls";
+import { getAllOptions, getAllDates } from "@/libs/apiCalls";
+import { DayCard } from "@/components/DayCard";
+import { Benefit } from "@/components/Benefit";
+import { Feature } from "@/components/Feature";
+import { HeaderNav } from "@/components/HeaderNav";
 import ReservationForm from "@/components/ReservationForm";
-import dynamic from "next/dynamic";
-import type { Option } from "@/libs/apiCalls";
-import logo from "@/public/Full-logo.png"
-import logo2 from "@/public/LA.jpg"
 import Image from "next/image";
+import logo from "@/public/Full-logo.png";
+import type { Option } from "@/libs/apiCalls";
 
-/**
- * CONFIGURATION & THEME
- * Update these values only—no code changes needed elsewhere
- */
 export const CONFIG = {
   cohortDates: "September, 2025",
   location: "Lagos, Nigeria",
@@ -42,14 +37,6 @@ export const CONFIG = {
     basic: 150_000, // NGN (virtual only)
     premium: 200_000, // NGN (includes Day 3 physical)
   },
-};
-
-type FormData = {
-  name: string;
-  email: string;
-  tier: string; // tier name or id
-  amount: number; // actual price
-  paid: boolean;
 };
 
 export const THEME = {
@@ -66,6 +53,8 @@ const stagger = {
   show: { transition: { staggerChildren: 0.08 } },
 };
 const options = await getAllOptions();
+const dates = await getAllDates();
+console.log("dates", dates);
 
 export default function BootcampPage() {
   return (
@@ -90,10 +79,9 @@ export default function BootcampPage() {
             Algorithmic Trading Systems Architecture: From Design to Execution
           </motion.h1>
           <p className="mt-3 text-slate-600 text-sm" aria-live="polite">
-            {CONFIG.cohortDates}
+            {`${dates[0]?.month}`}
           </p>
           {/* <p className="text-slate-600 text-sm">
-            Day 3 Venue: {CONFIG.location}
           </p> */}
           <p className="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">
             Turn your trading ideas into live, automated systems. In just three
@@ -113,12 +101,6 @@ export default function BootcampPage() {
             >
               Reserve My Spot
             </button>
-            {/* <button
-              className="h-12 rounded-xl px-6"
-              aria-label="Download program outline"
-            >
-              Download Outline
-            </button> */}
           </div>
           {/* <div
             className="mt-8 flex items-center justify-center gap-6 text-sm text-slate-600"
@@ -326,12 +308,6 @@ export default function BootcampPage() {
                 </div>
               </CardHeader>
               <CardContent className="text-slate-600 text-sm space-y-3">
-                {/* <Step num="1" text="Register online" />
-                <Step num="2" text="Complete the onboarding assessment" />
-                <Step num="3" text="Confirm payment to secure your seat" />
-                <div className="mt-2 text-xs text-slate-500">
-                  Premium Day 3 happens in {CONFIG.location}. Limited seats.
-                </div> */}
                 <ul>
                   <li className="ml-4 list-disc">
                     Aspiring <b>quant traders & system developers</b>
@@ -350,7 +326,7 @@ export default function BootcampPage() {
             </Card>
           </div>
           {/* Lead form */}
-          <LeadForm options={options} />;
+          <ReservationForm options={options} />
         </div>
       </section>
 
@@ -364,21 +340,6 @@ export default function BootcampPage() {
             Experience expert mentorship, hands‑on projects, and real deployment
             in one intensive bootcamp.
           </p>
-          {/* <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-            <button
-              className={`bg-[#CCA435] hover:bg-[#E5E5E5] text-white h-12 rounded-xl px-6`}
-              onClick={() =>
-                document
-                  .getElementById("cohort")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              Reserve My Spot
-            </button>
-            <button className="h-12 rounded-xl px-6">
-              Speak to an Advisor
-            </button>
-          </div> */}
           <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm text-slate-600">
             <span className="inline-flex items-center gap-2">
               <CheckCircle2 className="size-4" aria-hidden />{" "}
@@ -400,7 +361,14 @@ export default function BootcampPage() {
       <footer className="border-t border-t-gray-400 py-10">
         <div className="mx-auto max-w-7xl px-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-sm">
           <div>
-            <div className="font-extrabold text-lg">Leading Alpha</div>
+            <div className="font-extrabold text-lg">
+              <Image
+                src={logo}
+                alt="Leading Alpha Logo"
+                width={60}
+                height={60}
+              />
+            </div>
             <p className="mt-2 text-slate-600">
               Systematic trading education & automation—built for real‑world
               deployment.
@@ -431,7 +399,16 @@ export default function BootcampPage() {
             <ul className="mt-2 space-y-1 text-slate-600">
               {/* <li>FAQ</li>
               <li>Policies</li> */}
-              <li>Contact</li>
+              <li>
+                <a
+                  href="https://wa.me/2348012345678?text=Hi%2C%20I%27m%20interested%20in%20the%20bootcamp%20👋"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#001F3E] transition"
+                >
+                  Contact
+                </a>
+              </li>
             </ul>
           </div>
           <div>
@@ -449,349 +426,6 @@ export default function BootcampPage() {
           rights reserved.
         </div>
       </footer>
-    </div>
-  );
-}
-
-function HeaderNav() {
-  return (
-    <header
-      className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/70 border-b border-b-gray-300"
-      aria-label="Primary"
-    >
-      <div className="mx-auto max-w-7xl px-6 flex h-16 items-center justify-between">
-        <a
-          href="#top"
-          className="font-extrabold tracking-tight text-xl"
-          aria-label="Leading Alpha Home"
-        > 
-          <Image src={logo} alt="Leading Alpha Logo" width={60} height={60} />
-          {/* Leading <span className="text-slate-700">Alpha</span> */}
-        </a>
-        <nav
-          className="hidden md:flex items-center gap-8 text-sm"
-          aria-label="Main"
-        >
-          <a href="#overview" className="hover:text-slate-700">
-            Overview
-          </a>
-          <a href="#timeline" className="hover:text-slate-700">
-            Timeline
-          </a>
-          <a href="#cohort" className="hover:text-slate-700">
-            Cohort
-          </a>
-          <a href="#cta" className="hover:text-slate-700">
-            Reserve
-          </a>
-        </nav>
-        <div className="flex items-center gap-3">
-          {/* <button className="hidden sm:inline-flex" aria-label="Sign in">
-            Sign in
-          </button>
-          <button
-            className={`${THEME.btnPrimary} rounded-xl px-4 py-2`}
-            aria-label="Get started"
-          >
-            Get Started
-          </button> */}
-        </div>
-      </div>
-    </header>
-  );
-}
-
-function LeadForm({ options }: { options: Option[] }) {
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [tier, setTier] = React.useState<"basic" | "premium">("premium");
-  const [loading, setLoading] = React.useState(false);
-  const amountNGN = CONFIG.pricing[tier];
-
-  const getAllOptions = async () => {
-    try {
-      const response = await axios.get("/api/options");
-      console.log(response.data, "response.data");
-    } catch {
-      console.log("Error fetching options");
-    }
-  };
-  React.useEffect(() => {
-    getAllOptions();
-  }, []);
-
-  // Load Paystack inline script (client-side only)
-  React.useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (!(window as any).PaystackPop) {
-      const s = document.createElement("script");
-      s.src = "https://js.paystack.co/v1/inline.js";
-      s.async = true;
-      document.body.appendChild(s);
-    }
-  }, []);
-
-  const {
-    register,
-    reset,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>();
-
-  const onSubmit = async (data: FormData) => {
-    console.log(data, "data");
-    setLoading(true);
-    try {
-      // 1) Send lead to your CRM (fire-and-forget)
-      const [tier, amountStr] = data.tier.split("|");
-      const amount = Number(amountStr);
-      const response = await axios.post("/api/users", {
-        name: data.name,
-        email: data.email,
-        tier,
-        amount,
-        paid: false,
-      });
-
-      console.log("Saved lead:", response);
-      const userId = response?.data?._id || response?.data?.id;
-      // 2) Trigger Paystack Inline if key & script are present
-      const paystack =
-        (typeof window !== "undefined" && (window as any).PaystackPop) || null;
-      if (paystack && CONFIG.paystackPublicKey) {
-        const handler = paystack.setup({
-          key: CONFIG.paystackPublicKey,
-          email: data.email,
-          amount: amount * 100, // kobo
-          currency: "NGN",
-          ref: `LA-BC-${Date.now()}`,
-          callback: function (response: any) {
-            // wrap async logic inside an IIFE
-            (async () => {
-              try {
-                await axios.post("/api/users/confirm", {
-                  userId,
-                  ref: response.reference,
-                });
-
-                alert("Payment successful! We'll email next steps.");
-                reset(); // clear form
-              } catch (err) {
-                console.error(err);
-                alert(
-                  "We received your payment, but verification failed. Please contact support."
-                );
-              }
-            })();
-          },
-          onClose: function () {
-            console.log("Paystack modal closed");
-            console.log(handler, "handler");
-          },
-        });
-
-        handler.openIframe();
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong. Please try again.");
-    }
-  };
-
-  return (
-    <div className="mt-10 rounded-3xl border border-gray-200 p-6 text-center">
-      <h3 className="text-xl font-semibold">Reserve your seat</h3>
-      <p className="mt-1 text-slate-600 text-sm">
-        We’ll reach out within one business day with next steps.
-      </p>
-
-      <form
-        className="mt-4 grid gap-3"
-        onSubmit={handleSubmit(onSubmit)}
-        noValidate
-      >
-        {/* Full name */}
-        <div>
-          <input
-            aria-label="Full name"
-            placeholder="Full name"
-            className="h-12 w-full rounded-xl border border-gray-200 px-3"
-            {...register("name", { required: "Full name is required" })}
-          />
-          {errors.name && (
-            <p className="mt-1 text-left text-sm text-red-600">
-              {errors.name.message}
-            </p>
-          )}
-        </div>
-
-        {/* Email */}
-        <div>
-          <input
-            type="email"
-            aria-label="Email address"
-            placeholder="Email address"
-            className="h-12 w-full rounded-xl border border-gray-200 px-3"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Enter a valid email address",
-              },
-            })}
-          />
-          {errors.email && (
-            <p className="mt-1 text-left text-sm text-red-600">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
-
-        {/* Tier select */}
-        <div>
-          <select
-            aria-label="Select tier"
-            className="h-12 w-full rounded-xl border border-gray-200 px-3"
-            {...register("tier", { required: "Please select a tier" })}
-            defaultValue=""
-          >
-            <option value="" disabled>
-              -- Select a tier --
-            </option>
-            {options.map((option) => (
-              <option
-                key={option._id}
-                value={`${option.name}|${option.amount}`}
-                disabled={!option.available}
-              >
-                {option.name} — ₦{Number(option.amount).toLocaleString()}
-                {!option.available ? " (Sold out)" : ""}
-              </option>
-            ))}
-          </select>
-          {errors.tier && (
-            <p className="mt-1 text-left text-sm text-red-600">
-              {errors.tier.message}
-            </p>
-          )}
-        </div>
-
-        {/* Submit button */}
-        <button
-          className="bg-[#CCA435] hover:bg-[#E5E5E5] hover:text-[#CCA435] text-white h-12 rounded-xl transition"
-          type="submit"
-          disabled={isSubmitting}
-          aria-live="polite"
-        >
-          {isSubmitting ? "Processing…" : "Reserve & Pay"}
-        </button>
-      </form>
-      <p className="mt-2 text-xs text-slate-500">
-        By submitting, you agree to our Terms and acknowledge our Privacy
-        Policy.
-      </p>
-    </div>
-  );
-}
-
-function Feature({
-  icon,
-  title,
-  desc,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  desc: string;
-}) {
-  return (
-    <Card className="rounded-2xl">
-      <CardHeader>
-        <div className="flex items-center gap-3 text-slate-700">
-          <span className="inline-flex items-center justify-center size-9 rounded-xl bg-slate-100">
-            {icon}
-          </span>
-          <CardTitle className="text-base font-semibold">{title}</CardTitle>
-        </div>
-      </CardHeader>
-      <CardContent className="text-slate-600 text-sm">{desc}</CardContent>
-    </Card>
-  );
-}
-
-function Benefit({
-  icon,
-  title,
-  desc,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  desc: string;
-}) {
-  return (
-    <Card className="rounded-2xl">
-      <CardHeader>
-        <div className="flex items-center gap-3 text-slate-700">
-          <span className="inline-flex items-center justify-center size-9 rounded-xl bg-slate-100">
-            {icon}
-          </span>
-          <CardTitle className="text-base font-semibold">{title}</CardTitle>
-        </div>
-      </CardHeader>
-      <CardContent className="text-slate-600 text-sm">{desc}</CardContent>
-    </Card>
-  );
-}
-
-function DayCard({
-  day,
-  mode,
-  title,
-  objective,
-  highlights,
-}: {
-  day: string;
-  mode?: string;
-  title: string;
-  objective: string;
-  highlights: string[];
-}) {
-  return (
-    <Card className="rounded-3xl overflow-hidden">
-      <CardHeader className="bg-slate-50/60">
-        <div className="flex items-center justify-between">
-          <div className="font-semibold">
-            {day} · {title}
-          </div>
-          {/* <span className="text-xs rounded-full border px-3 py-1 bg-white">
-            {mode}
-          </span> */}
-        </div>
-      </CardHeader>
-      <CardContent className="pt-6 text-slate-700 text-sm">
-        <p className="mb-3">
-          <span className="font-medium text-slate-900">Objective:</span>{" "}
-          {objective}
-        </p>
-        <ul className="space-y-2">
-          {highlights.map((h, i) => (
-            <li key={i} className="flex items-start gap-2">
-              <ChevronRight className="mt-0.5 size-4 text-slate-400" />
-              <span>{h}</span>
-            </li>
-          ))}
-        </ul>
-      </CardContent>
-    </Card>
-  );
-}
-
-function Step({ num, text }: { num: string; text: string }) {
-  return (
-    <div className="flex items-center gap-3">
-      <span className="inline-flex items-center justify-center size-6 rounded-full border text-xs bg-white">
-        {num}
-      </span>
-      <span>{text}</span>
     </div>
   );
 }

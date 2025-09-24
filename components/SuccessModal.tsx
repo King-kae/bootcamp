@@ -1,0 +1,40 @@
+// components/SuccessModal.tsx
+"use client";
+
+import { useEffect } from "react";
+
+interface SuccessModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"; // prevent background scroll
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-white/30 backdrop-blur-sm z-50">
+      <div className="bg-white/90 p-6 rounded-2xl shadow-2xl text-center w-[90%] max-w-md">
+        <h2 className="text-2xl font-bold text-[#001F3E]">
+          Payment Successful!
+        </h2>
+        <p className="mt-2 text-gray-700">
+          We’ll email you the next steps shortly.
+        </p>
+        <button
+          className="mt-4 px-5 py-2 bg-[#CCA435] hover:bg-[#E5E5E5] hover:text-[#CCA435] text-white font-medium rounded-lg shadow-md transition"
+          onClick={onClose}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+}

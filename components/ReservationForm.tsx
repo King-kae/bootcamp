@@ -6,6 +6,7 @@ import type { Option } from "@/libs/apiCalls";
 import axios from "axios";
 import { CONFIG } from "@/app/page";
 import { useState, useEffect } from "react";
+import SuccessModal from "./SuccessModal";
 
 type FormData = {
   name: string;
@@ -15,15 +16,10 @@ type FormData = {
   paid: boolean;
 };
 
-export default function ReservationForm({ options }: { options: Option[] }) {
-  const [loading, setLoading] = useState(false);
+const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_TEST_PAYSTACK_PUBLIC_KEY;
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>();
-
+function ReservationForm({ options }: { options: Option[] }) {
+  const [showModal, setShowModal] = useState(false);
   // Load Paystack inline script (client-side only)
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -35,60 +31,65 @@ export default function ReservationForm({ options }: { options: Option[] }) {
     }
   }, []);
 
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
     try {
+      // 1) Send lead to your CRM (fire-and-forget)
       const [tier, amountStr] = data.tier.split("|");
       const amount = Number(amountStr);
-
-      // save lead (unpaid by default)
       const response = await axios.post("/api/users", {
         name: data.name,
         email: data.email,
         tier,
         amount,
-        cohort: CONFIG.cohortDates,
         paid: false,
       });
 
       console.log("Saved lead:", response);
+      const userId = response?.data?._id || response?.data?.id;
+      // 2) Trigger Paystack Inline if key & script are present
+      const paystack =
+        (typeof window !== "undefined" && (window as any).PaystackPop) || null;
+      if (paystack && PAYSTACK_PUBLIC_KEY) {
+        const handler = paystack.setup({
+          key: PAYSTACK_PUBLIC_KEY!,
+          email: data.email,
+          amount: amount * 100, // kobo
+          currency: "NGN",
+          ref: `LA-BC-${Date.now()}`,
+          callback: function (response: any) {
+            // wrap async logic inside an IIFE
+            (async () => {
+              try {
+                await axios.post("/api/users/confirm", {
+                  userId,
+                  ref: response.reference,
+                });
+                setShowModal(true);
+                // alert("Payment successful! We'll email next steps.");
+                reset(); // clear form
+              } catch (err) {
+                console.error(err);
+                alert(
+                  "We received your payment, but verification failed. Please contact support."
+                );
+              }
+            })();
+          },
+          onClose: function () {
+            console.log("Paystack modal closed");
+            console.log(handler, "handler");
+          },
+        });
 
-      // ✅ Get PaystackPop object safely
-      const paystack = (window as any).PaystackPop;
-      if (!paystack) {
-        alert("Paystack SDK not loaded. Please refresh and try again.");
-        return;
+        handler.openIframe();
       }
-
-      // ✅ Initialize Paystack popup only on button click
-      const handler = paystack.setup({
-        key: process.env.TEST_PAYSTACK_PUBLIC_KEY, // pk_test_xxx or pk_live_xxx
-        email: data.email,
-        amount: amount * 100, // Paystack uses kobo
-        currency: "NGN",
-        ref: `LA-BC-${Date.now()}`,
-        callback: async function (response: any) {
-          try {
-            // Verify & update payment
-            await axios.post("/api/users/confirm", {
-              email: data.email,
-              ref: response.reference,
-            });
-
-            alert("Payment successful! We'll email next steps.");
-          } catch (err) {
-            console.error(err);
-            alert(
-              "We received your payment, but verification failed. Please contact support."
-            );
-          }
-        },
-        onClose: function () {
-          console.log("Paystack modal closed");
-        },
-      });
-
-      handler.openIframe();
     } catch (err) {
       console.error(err);
       alert("Something went wrong. Please try again.");
@@ -97,6 +98,7 @@ export default function ReservationForm({ options }: { options: Option[] }) {
 
   return (
     <div className="mt-10 rounded-3xl border border-gray-200 p-6 text-center">
+      <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)} />
       <h3 className="text-xl font-semibold">Reserve your seat</h3>
       <p className="mt-1 text-slate-600 text-sm">
         We’ll reach out within one business day with next steps.
@@ -190,3 +192,4 @@ export default function ReservationForm({ options }: { options: Option[] }) {
     </div>
   );
 }
+export default ReservationForm;

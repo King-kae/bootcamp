@@ -22,4 +22,17 @@ export async function getAllOptions(): Promise<Option[]> {
   }
 }
 
+export async function getAllDates(): Promise<any[]> {
+  try {
+    const baseUrl =
+      typeof window === "undefined"
+        ? process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+        : "";
 
+    const response = await axios.get(`${baseUrl}/api/date`);
+    return response.data.options;
+  } catch (error) {
+    console.error("Error fetching dates:", error);
+    return [];
+  }
+}
