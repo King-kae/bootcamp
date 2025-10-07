@@ -215,7 +215,7 @@ export default function BootcampPage() {
       {/* OVERVIEW */}
       <section id="overview" className="py-20 md:px-32 px-6 bg-[#EBC2000D]">
         <div className="mx-auto">
-          <h2 className="text-3xl font-bold text-center">What You’ll Gain</h2>
+          <h2 className="text-4xl text-center">What You’ll Gain</h2>
           <p className="mt-2 text-center text-slate-600">
             Outcomes focused on real‑world skills you can deploy immediately.
           </p>
@@ -322,8 +322,8 @@ export default function BootcampPage() {
       {/* BENEFITS */}
       <section className="bg-[#EBC2000D] py-16 md:px-32 px-6">
         <div>
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Why Join <span className="italic text-black">The Bootcamp</span>
+          <h2 className="text-4xl text-gray-900 mb-4">
+            Why Join <span className="italic font-bold text-black">The Bootcamp</span>
           </h2>
           <p className="text-gray-700 text-lg mb-3">
             Gain practical, real-world trading experience in just three weeks,
@@ -404,7 +404,7 @@ export default function BootcampPage() {
           {/* Heading */}
           <motion.h1
             variants={variants}
-            className="text-2xl text-white font-semibold text-center"
+            className="text-5xl font-light text-white text-center"
           >
             Programme Timeline
           </motion.h1>
@@ -494,7 +494,7 @@ export default function BootcampPage() {
           variants={variants}
           className="mx-auto md:px-32 px-6 text-center md:text-left"
         >
-          <h2 className="text-3xl font-bold">Cohort Details</h2>
+          <h2 className="text-5xl font-extralight">Cohort Details</h2>
           <p className="text-gray-600">
             Your learning journey, structured for maximum impact
           </p>
@@ -545,13 +545,13 @@ export default function BootcampPage() {
       </motion.section>
       {/* ===================== NEXT 3 SESSIONS ===================== */}
       <motion.section
-        className="bg-gray-50 pt-10 pb-20 px-6"
+        className="bg-gray-50 pt-10 pb-20 px-6 md:px-32"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <motion.div className="md:px-28 mx-auto" variants={variants}>
-          <h2 className="text-3xl font-bold text-gray-900">Next 3 Sessions</h2>
+        <motion.div className=" mx-auto" variants={variants}>
+          <h2 className="text-5xl text-gray-900">Next 3 Sessions</h2>
           <p className="text-gray-600 mt-1">
             Plan Ahead: Secure Your Spot in Our Upcoming Bootcamps
           </p>
@@ -569,7 +569,7 @@ export default function BootcampPage() {
             },
           }}
         >
-          <div className="absolute top-4 left-0 right-0 h-[2px] bg-green-400 z-0" />
+          <div className="absolute top-4 hidden sm:block left-0 right-0 h-[2px] bg-green-400 z-0" />
 
           {sessions.map((session, index) => (
             <motion.div
@@ -577,6 +577,8 @@ export default function BootcampPage() {
               variants={variants}
               className="relative w-full sm:w-auto z-10 flex flex-col items-start text-center"
             >
+              <div className="absolute sm:hidden w-full -z-19 top-4 left-0 right-0 h-[2px] bg-green-400" />
+
               <div className="px-4 py-1 border-2 border-green-400 rounded-full bg-white font-medium text-gray-900 shadow-sm">
                 {session.month}
               </div>
