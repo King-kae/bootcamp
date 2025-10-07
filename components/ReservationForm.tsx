@@ -1,26 +1,30 @@
-// components/ReservationForm.tsx
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import type { Option } from "@/libs/apiCalls";
 import axios from "axios";
-import { CONFIG } from "@/app/page";
 import { useState, useEffect } from "react";
 import SuccessModal from "./SuccessModal";
+import Image from "next/image";
+import Icon from "@/public/Icon.png";
+import { useRouter } from "next/navigation";
 
 type FormData = {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  tier: string; // tier name or id
-  amount: number; // actual price
-  paid: boolean;
+  phone: string;
+  location: string;
+  tier: string;
+  agree: boolean;
 };
 
 const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_TEST_PAYSTACK_PUBLIC_KEY;
 
 function ReservationForm({ options }: { options: Option[] }) {
   const [showModal, setShowModal] = useState(false);
-  // Load Paystack inline script (client-side only)
+  const router = useRouter();
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!(window as any).PaystackPop) {
@@ -33,6 +37,7 @@ function ReservationForm({ options }: { options: Option[] }) {
 
   const {
     register,
+    control,
     reset,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -40,51 +45,46 @@ function ReservationForm({ options }: { options: Option[] }) {
 
   const onSubmit = async (data: FormData) => {
     try {
-      // 1) Send lead to your CRM (fire-and-forget)
-      const [tier, amountStr] = data.tier.split("|");
+      const [tierName, amountStr] = data.tier.split("|");
       const amount = Number(amountStr);
+
       const response = await axios.post("/api/users", {
-        name: data.name,
+        name: `${data.firstName} ${data.lastName}`,
         email: data.email,
-        tier,
+        phone: data.phone,
+        location: data.location,
+        tier: tierName,
         amount,
         paid: false,
       });
 
-      console.log("Saved lead:", response);
       const userId = response?.data?._id || response?.data?.id;
-      // 2) Trigger Paystack Inline if key & script are present
+
       const paystack =
         (typeof window !== "undefined" && (window as any).PaystackPop) || null;
+
       if (paystack && PAYSTACK_PUBLIC_KEY) {
         const handler = paystack.setup({
           key: PAYSTACK_PUBLIC_KEY!,
           email: data.email,
-          amount: amount * 100, // kobo
+          amount: amount * 100,
           currency: "NGN",
           ref: `LA-BC-${Date.now()}`,
-          callback: function (response: any) {
-            // wrap async logic inside an IIFE
-            (async () => {
-              try {
-                await axios.post("/api/users/confirm", {
-                  userId,
-                  ref: response.reference,
-                });
-                setShowModal(true);
-                // alert("Payment successful! We'll email next steps.");
-                reset(); // clear form
-              } catch (err) {
-                console.error(err);
-                alert(
-                  "We received your payment, but verification failed. Please contact support."
-                );
-              }
-            })();
+          callback: async (response: any) => {
+            try {
+              await axios.post("/api/users/confirm", {
+                userId,
+                ref: response.reference,
+              });
+              setShowModal(true);
+              reset();
+            } catch (err) {
+              console.error(err);
+              alert("Payment verification failed, please contact support.");
+            }
           },
-          onClose: function () {
+          onClose: () => {
             console.log("Paystack modal closed");
-            console.log(handler, "handler");
           },
         });
 
@@ -97,99 +97,206 @@ function ReservationForm({ options }: { options: Option[] }) {
   };
 
   return (
-    <div className="mt-10 rounded-3xl border border-gray-200 p-6 text-center">
-      <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)} />
-      <h3 className="text-xl font-semibold">Reserve your seat</h3>
-      <p className="mt-1 text-slate-600 text-sm">
-        We’ll reach out within one business day with next steps.
-      </p>
-
+    <div className="mt-10 md:w-[85%] w-full bg-[#FFFFFF80] mx-auto rounded-3xl border border-gray-200 p-6">
+      <SuccessModal isOpen={showModal} onClose={() => {
+        router.push("/")
+        setShowModal(false)
+      }} />
       <form
-        className="mt-4 grid gap-3"
+        className="mt-8 grid gap-6"
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
-        {/* Full name */}
-        <div>
-          <input
-            aria-label="Full name"
-            placeholder="Full name"
-            className="h-12 w-full rounded-xl border border-gray-200 px-3"
-            {...register("name", { required: "Full name is required" })}
-          />
-          {errors.name && (
-            <p className="mt-1 text-left text-sm text-red-600">
-              {errors.name.message}
-            </p>
-          )}
+        {/* First + Last Name */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-[#363636] text-sm font-medium mb-1">
+              First name
+            </label>
+            <input
+              placeholder="Enter your first name"
+              className="h-12 w-full rounded-xl border border-gray-200 px-3"
+              {...register("firstName", { required: "First name is required" })}
+            />
+            {errors.firstName && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.firstName.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="block text-[#363636] text-sm font-medium mb-1">
+              Last name
+            </label>
+            <input
+              placeholder="Enter your last name"
+              className="h-12 w-full rounded-xl border border-gray-200 px-3"
+              {...register("lastName", { required: "Last name is required" })}
+            />
+            {errors.lastName && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.lastName.message}
+              </p>
+            )}
+          </div>
         </div>
 
-        {/* Email */}
-        <div>
-          <input
-            type="email"
-            aria-label="Email address"
-            placeholder="Email address"
-            className="h-12 w-full rounded-xl border border-gray-200 px-3"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Enter a valid email address",
-              },
-            })}
-          />
-          {errors.email && (
-            <p className="mt-1 text-left text-sm text-red-600">
-              {errors.email.message}
-            </p>
-          )}
+        {/* Email + Phone */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-[#363636] text-sm font-medium mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="h-12 w-full rounded-xl border border-gray-200 px-3"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Enter a valid email",
+                },
+              })}
+            />
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="block text-[#363636] text-sm font-medium mb-1">
+              Phone number
+            </label>
+            <input
+              type="tel"
+              placeholder="Enter your phone number"
+              className="h-12 w-full rounded-xl border border-gray-200 px-3"
+              {...register("phone", { required: "Phone number is required" })}
+            />
+            {errors.phone && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.phone.message}
+              </p>
+            )}
+          </div>
         </div>
 
-        {/* Tier select */}
+        {/* Location */}
         <div>
-          <select
-            aria-label="Select tier"
-            className="h-12 w-full rounded-xl border border-gray-200 px-3"
-            {...register("tier", { required: "Please select a tier" })}
-            defaultValue=""
-          >
-            <option value="" disabled>
-              -- Select a tier --
-            </option>
-            {options.map((option) => (
-              <option
-                key={option._id}
-                value={`${option.name}|${option.amount}`}
-                disabled={!option.available}
+          <label className="block text-[#363636] text-sm font-medium mb-1">
+            Your location
+          </label>
+          <Controller
+            control={control}
+            name="location"
+            rules={{ required: "Please select a location" }}
+            render={({ field }) => (
+              <select
+                {...field}
+                className="h-12 w-full  text-[#363636] rounded-xl border border-gray-200 px-3"
               >
-                {option.name} — ₦{Number(option.amount).toLocaleString()}
-                {!option.available ? " (Sold out)" : ""}
-              </option>
-            ))}
-          </select>
-          {errors.tier && (
-            <p className="mt-1 text-left text-sm text-red-600">
-              {errors.tier.message}
+                <option value="">Select option</option>
+                <option value="Nigeria">Nigeria</option>
+                <option value="Ghana">Ghana</option>
+                <option value="Kenya">Kenya</option>
+              </select>
+            )}
+          />
+          {errors.location && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.location.message}
             </p>
           )}
         </div>
 
-        {/* Submit button */}
+        {/* Tier Selection */}
+        <div>
+          <label className="block text-[#363636] text-sm font-medium mb-2">
+            Select a tier
+          </label>
+          <Controller
+            control={control}
+            name="tier"
+            rules={{ required: "Please select a tier" }}
+            render={({ field }) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {options.map((option) => {
+                  const val = `${option.name}|${option.amount}`;
+                  const isActive = field.value === val;
+                  return (
+                    <div
+                      key={option._id}
+                      onClick={() => field.onChange(val)}
+                      className={`cursor-pointer rounded-lg flex items-start border p-5 ${
+                        isActive
+                          ? "border-black bg-[#9097C01A] text-[#363636]"
+                          : "border-gray-200"
+                      }`}
+                    >
+                      <div>
+                        <p className="font-medium">{option.name}</p>
+                        <p className="text-xl font-bold mt-1">
+                          ₦{Number(option.amount).toLocaleString()}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-2">
+                          {option.name === "Early Bird"
+                            ? "Commit early and save 40%"
+                            : "Get full access at the standard rate"}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-2">
+                          {option.available ? "" : "Sold out"}
+                        </p>
+                      </div>
+                      {isActive && (
+                        <div className="ml-auto flex items-end justify-start">
+                          <Image
+                            src={Icon}
+                            alt="Selected"
+                            width={24}
+                            height={24}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          />
+          {errors.tier && (
+            <p className="mt-1 text-sm text-red-600">{errors.tier.message}</p>
+          )}
+        </div>
+
+        {/* Terms */}
+        <div className="flex items-start">
+          <input
+            type="checkbox"
+            className="mt-1"
+            {...register("agree", { required: "You must agree to continue" })}
+          />
+          <p className="ml-2 text-sm text-gray-600">
+            By submitting, you agree to our Terms and acknowledge our Privacy
+            Policy.
+          </p>
+        </div>
+        {errors.agree && (
+          <p className="mt-1 text-sm text-red-600">{errors.agree.message}</p>
+        )}
+
+        {/* Submit */}
         <button
-          className="bg-[#CCA435] hover:bg-[#E5E5E5] hover:text-[#CCA435] text-white h-12 rounded-xl transition"
+          className="w-full bg-green-600 hover:bg-green-700 text-white h-12 rounded-xl font-medium transition"
           type="submit"
           disabled={isSubmitting}
-          aria-live="polite"
         >
-          {isSubmitting ? "Processing…" : "Reserve & Pay"}
+          {isSubmitting ? "Processing…" : "Reserve and pay"}
         </button>
       </form>
-      <p className="mt-2 text-xs text-slate-500">
-        By submitting, you agree to our Terms and acknowledge our Privacy
-        Policy.
-      </p>
     </div>
   );
 }
+
 export default ReservationForm;

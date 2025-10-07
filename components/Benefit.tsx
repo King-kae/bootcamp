@@ -1,25 +1,37 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React from "react";
+import { FaStar } from "react-icons/fa";
 
-export function Benefit({
-  icon,
-  title,
-  desc,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  desc: string;
-}) {
-  return (
-    <Card className="rounded-2xl">
-      <CardHeader>
-        <div className="flex items-center gap-3 text-slate-700">
-          <span className="inline-flex items-center justify-center size-9 rounded-xl bg-slate-100">
-            {icon}
-          </span>
-          <CardTitle className="text-base font-semibold">{title}</CardTitle>
-        </div>
-      </CardHeader>
-      <CardContent className="text-slate-600 text-sm">{desc}</CardContent>
-    </Card>
-  );
+interface WeekItemProps {
+  text: string;
 }
+
+const WeekItem: React.FC<WeekItemProps> = ({ text }) => (
+  <div className="flex items-start gap-2">
+    <FaStar className="w-4 h-4 text-blue-500 mt-1" />
+    <p className="text-white">{text}</p>
+  </div>
+);
+
+interface WeekCardProps {
+  week: string;
+  title: string;
+  objective: string;
+  items: string[];
+  bg?: string;
+}
+
+export const WeekCard: React.FC<WeekCardProps> = ({ week, title, objective, items, bg }) => (
+  <div className="bg-white rounded-xl shadow-sm border border-gray-700 overflow-hidden">
+    <div className={`p-4 ${bg}`}>
+      <h3 className="text-lg font-semibold">{week}: {title}</h3>
+      <p className="text-sm text-gray-600 mt-1">
+        Objective: {objective}
+      </p>
+    </div>
+    <div className="p-4 bg-[#212121] space-y-3">
+      {items.map((item, i) => (
+        <WeekItem key={i} text={item} />
+      ))}
+    </div>
+  </div>
+);

@@ -21,4 +21,5 @@
 
 body {
   @apply bg-[var(--background)] text-[var(--foreground)] font-sans antialiased;
+  font-family: var(--font-circular), sans-serif;
 }
