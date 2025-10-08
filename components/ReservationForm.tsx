@@ -23,6 +23,7 @@ const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_TEST_PAYSTACK_PUBLIC_KEY;
 
 function ReservationForm({ options }: { options: Option[] }) {
   const [showModal, setShowModal] = useState(false);
+  const [verify, setVerify] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -94,6 +95,7 @@ function ReservationForm({ options }: { options: Option[] }) {
 
   // ✅ Separate async handler for payment verification
   async function verifyPayment(userId: string, reference: string) {
+    setVerify(true);
     try {
       await axios.post("/api/users/confirm", { userId, ref: reference });
       setShowModal(true);
@@ -102,60 +104,8 @@ function ReservationForm({ options }: { options: Option[] }) {
       console.error(err);
       alert("Payment verification failed. Please contact support.");
     }
+    setVerify(false);
   }
-
-  // const onSubmit = async (data: FormData) => {
-  //   try {
-  //     const [tierName, amountStr] = data.tier.split("|");
-  //     const amount = Number(amountStr);
-
-  //     const response = await axios.post("/api/users", {
-  //       name: `${data.firstName} ${data.lastName}`,
-  //       email: data.email,
-  //       phone: data.phone,
-  //       location: data.location,
-  //       tier: tierName,
-  //       amount,
-  //       paid: false,
-  //     });
-
-  //     const userId = response?.data?._id || response?.data?.id;
-
-  //     const paystack =
-  //       (typeof window !== "undefined" && (window as any).PaystackPop) || null;
-
-  //     if (paystack && PAYSTACK_PUBLIC_KEY) {
-  //       const handler = paystack.setup({
-  //         key: PAYSTACK_PUBLIC_KEY!,
-  //         email: data.email,
-  //         amount: amount * 100,
-  //         currency: "NGN",
-  //         ref: `LA-BC-${Date.now()}`,
-  //         callback: async (response: any) => {
-  //           try {
-  //             await axios.post("/api/users/confirm", {
-  //               userId,
-  //               ref: response.reference,
-  //             });
-  //             setShowModal(true);
-  //             reset();
-  //           } catch (err) {
-  //             console.error(err);
-  //             alert("Payment verification failed, please contact support.");
-  //           }
-  //         },
-  //         onClose: () => {
-  //           console.log("Paystack modal closed");
-  //         },
-  //       });
-
-  //       handler.openIframe();
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("Something went wrong. Please try again.");
-  //   }
-  // };
 
   return (
     <div className="mt-10 md:w-[85%] w-full bg-[#FFFFFF80] mx-auto rounded-3xl border border-gray-200 p-6">
@@ -286,7 +236,7 @@ function ReservationForm({ options }: { options: Option[] }) {
             rules={{ required: "Please select a tier" }}
             render={({ field }) => (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {options.map((option) => {
+                {options?.map((option) => {
                   const val = `${option.name}|${option.amount}`;
                   const isActive = field.value === val;
                   return (
@@ -354,9 +304,9 @@ function ReservationForm({ options }: { options: Option[] }) {
         <button
           className="w-full bg-green-600 hover:bg-green-700 text-white h-12 rounded-xl font-medium transition"
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || verify}
         >
-          {isSubmitting ? "Processing…" : "Reserve and pay"}
+          {(isSubmitting || verify) ? "Processing…" : "Reserve and pay"}
         </button>
       </form>
     </div>
