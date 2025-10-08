@@ -11,8 +11,8 @@ import { WeekCard } from "@/components/Benefit";
 import { HeaderNav } from "@/components/HeaderNav";
 import Image from "next/image";
 import logo from "@/public/VERTICAL BRANDMARK GREEN 2.png";
-import smalllogo from "@/public/la-logo.png";
-import hero from "@/public/Hero-Image.png";
+import smalllogo from "@/public/Group.png";
+import hero from "@/public/Hero Image (1).png";
 import hero2 from "@/public/Image-2.png";
 import user from "@/public/users-relation-svgrepo-com 1 (1).png";
 import schedule from "@/public/schedule-left-svgrepo-com 1 (1).png";
@@ -20,9 +20,10 @@ import cerficate from "@/public/certificates-champion-education-learning-medal-s
 import stockmarket from "@/public/stock-market.png";
 import { useRouter } from "next/navigation";
 import FloatingWhatsapp from "@/components/FloatingWhatsapp";
-import chart from "@/public/319shots_so 1.png";
+import chart from "@/public/319shots_so 2.png";
 import chart1 from "@/public/742shots_so 1.png";
-import cloud from "@/public/cloud-computing-polygonal-wireframe-technology-concept 1.png";
+import cloud from "@/public/cloud-computing-polygonal-wireframe-technology-concept 1 (1).png";
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 
 export const CONFIG = {
   cohortDates: "September, 2025",
@@ -32,24 +33,6 @@ export const CONFIG = {
   pricing: {
     basic: 150_000, // NGN (virtual only)
     premium: 200_000, // NGN (includes Day 3 physical)
-  },
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i = 1) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.15, duration: 0.6, ease: "easeOut" },
-  }),
-};
-
-const containerVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: "easeOut" }, // use a valid string for ease
   },
 };
 
@@ -127,24 +110,19 @@ export const THEME = {
   btnPrimary: "bg-emerald-600 hover:bg-emerald-700 text-white", // Tailwind class for now
 };
 
-const stagger = {
-  show: { transition: { staggerChildren: 0.08 } },
-};
-const options = await getAllOptions();
-const dates = await getAllDates();
-console.log("dates", dates);
-
 export default function BootcampPage() {
   const router = useRouter();
+  const scrollToSection = useSmoothScroll(-80);
+  const links = ["Overview", "Cohort", "Timeline", "Save a spot", "Contact"];
   return (
     <div
-      className="min-h-screen bg-white text-slate-900 overflow-x-hidden"
+      className="min-h-screen bg-white text-slate-900 overflow-hidden"
       style={{ ["--brand" as any]: THEME.hexPrimary } as React.CSSProperties}
     >
       <HeaderNav />
       {/* HERO */}
-      <section className="min-h-screen flex items-center justify-center bg-white p-6">
-        <div className="max-w-6xl grid grid-cols-1 md:grid-cols-2 items-center gap-10">
+      <section className="min-h-screen md:px-32 px-6 flex items-center justify-center bg-white py-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-10">
           {/* Left Section */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -157,9 +135,9 @@ export default function BootcampPage() {
               <span>Learn. Build. Grow</span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+            <p className="font-[450] text-[64px] leading-[100%] tracking-[-0.02em] text-gray-900">
               Turn your trading <br /> ideas into live, <br /> automated systems
-            </h1>
+            </p>
 
             <p className="text-gray-600 text-lg">
               In just three weeks, master{" "}
@@ -238,7 +216,7 @@ export default function BootcampPage() {
                   alt="Strategy Chart"
                   width={200}
                   height={150}
-                  className="absolute bottom-0 right-0 rounded-md border w-[85%] h-[70%] object-contain border-gray-300"
+                  className="w-[85%] h-[75%] -mr-6 -mb-6 border-gray-300 self-end"
                 />
               </div>
 
@@ -255,7 +233,7 @@ export default function BootcampPage() {
                 </div>
 
                 {/* Cloud Deployment */}
-                <div className="p-6 border flex gap-4 relative border-gray-200 bg-[#9097C01A] rounded-[1rem]">
+                <div className="p-6 border flex flex-col gap-0 relative border-gray-200 bg-[#9097C01A] rounded-[1rem]">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">
                       Cloud Deployment
@@ -270,7 +248,7 @@ export default function BootcampPage() {
                     alt="Cloud Deployment"
                     width={200}
                     height={100}
-                    className="rounded-md h-32 border -mb-6 -mr-6 border-gray-300"
+                    className="h-24 -mb-6 -mr-6 border-gray-300 self-end"
                   />
                 </div>
 
@@ -323,7 +301,8 @@ export default function BootcampPage() {
       <section className="bg-[#EBC2000D] py-16 md:px-32 px-6">
         <div>
           <h2 className="text-4xl text-gray-900 mb-4">
-            Why Join <span className="italic font-bold text-black">The Bootcamp</span>
+            Why Join{" "}
+            <span className="italic font-bold text-black">The Bootcamp</span>
           </h2>
           <p className="text-gray-700 text-lg mb-3">
             Gain practical, real-world trading experience in just three weeks,
@@ -435,6 +414,7 @@ export default function BootcampPage() {
                   "Career Pathways in Today’s Quant Trading Industry",
                 ],
                 bg: "bg-[#9097C0]",
+                starColor: "#9097C0",
               },
               {
                 week: "Week 2",
@@ -448,6 +428,7 @@ export default function BootcampPage() {
                   "Live Coding – Multi-Timeframe Trading Indicator",
                 ],
                 bg: "bg-[#E8D2AE]",
+                starColor: "#E8D2AE",
               },
               {
                 week: "Week 3",
@@ -461,6 +442,7 @@ export default function BootcampPage() {
                   "Live Deployment with PineConnector",
                 ],
                 bg: "bg-[#F4F3EF]",
+                starColor: "#F4F3EF",
               },
             ].map((week, i) => (
               <motion.div key={i} variants={variants}>
@@ -525,20 +507,48 @@ export default function BootcampPage() {
                 height={40}
                 className="w-7 h-7 mb-4 text-blue-500"
               />
-              <h3 className="font-semibold text-lg text-slate-900 mb-2">
+              <h3 className="text-lg text-slate-900 mb-2">
                 {i === 0
                   ? "Schedule"
                   : i === 1
                   ? "Learning Flow"
                   : "Who This Is For"}
               </h3>
-              <p className="text-slate-600 text-sm">
-                {i === 0 && "3 weeks • Virtual • 6-8 hrs/week commitment"}
-                {i === 1 &&
-                  "Weekdays: self-paced learning. Weekends: live revision & Q&A."}
-                {i === 2 &&
-                  "Ideal for traders, finance pros & students exploring systematic trading."}
-              </p>
+              <div className="text-slate-600 text-sm">
+                {i === 0 && (
+                  <ul className="list-disc">
+                    <li>Duration: 3weeks</li>
+                    <li className="pt-3">Delivery Mode: Virtual</li>
+                    <li className="pt-3">Commitment: 6-8 hours per week</li>
+                  </ul>
+                )}
+                {i === 1 && (
+                  <ul className="list-disc">
+                    <li>
+                      Weekdays: Self-paced learning on LMS (videos, exercises,
+                      coding labs).
+                    </li>
+                    <li className="pt-3">
+                      Weekends: Live revision workshops, Q&A, and peer
+                      discussions
+                    </li>
+                  </ul>
+                )}
+                {i === 2 && (
+                  <ul className="list-disc">
+                    <li>Aspiring quant traders & system developers</li>
+                    <li className="pt-3">
+                      Retail traders ready to trade systematically
+                    </li>
+                    <li className="pt-3">
+                      Finance professionals moving into algo trading
+                    </li>
+                    <li className="pt-3">
+                      Students & enthusiasts exploring fintech and trading
+                    </li>
+                  </ul>
+                )}
+              </div>
             </motion.div>
           ))}
         </motion.div>
@@ -579,12 +589,15 @@ export default function BootcampPage() {
             >
               <div className="absolute sm:hidden w-full -z-19 top-4 left-0 right-0 h-[2px] bg-green-400" />
 
-              <div className="px-4 py-1 border-2 border-green-400 rounded-full bg-white font-medium text-gray-900 shadow-sm">
+              <div
+                className={`px-4 py-1 border-2 border-green-400 rounded-full bg-white font-medium text-gray-900 shadow-sm`}
+              >
                 {session.month}
               </div>
               <div className="mt-6 mb-4">
-                <div className="flex items-center mb-4 sm:justify-center justify-start text-gray-600 text-sm">
-                  <SlCalender className="h-4 w-4 mr-1" /> Start date
+                <div className="flex items-center mb-4 justify-start text-gray-600 text-sm">
+                  <SlCalender className="h-[14px] w-[14px] mr-1" />
+                  <p className="-mb-0.5">Start date</p>
                 </div>
                 <p className="mt-1 font-semibold text-gray-900">
                   {session.date}
@@ -655,24 +668,43 @@ export default function BootcampPage() {
                 </p>
               </div>
               <nav className="flex gap-6 text-sm text-gray-700 flex-wrap justify-start">
-                {[
-                  "Overview",
-                  "Cohort",
-                  "Timeline",
-                  "Save a spot",
-                  "Contact",
-                ].map((link, i) => (
-                  <motion.a
-                    key={i}
-                    href={link === "Save a spot" ? "/reservation" : `#${link.toLowerCase()}`}
-                    variants={variants}
-                    custom={i}
-                    className="hover:text-black"
-                  >
-                    {link}
-                  </motion.a>
-                ))}
-              </nav>
+                {links.map((link, i) => {
+                  if (link === "Save a spot") {
+                    return (
+                      <motion.a
+                        key={i}
+                        href="/reservation"
+                        variants={variants}
+                        className="hover:text-black"
+                      >
+                        {link}
+                      </motion.a>
+                    );
+                  }
+                  if (link === "Contact") {
+                    return (
+                      <motion.a
+                        key={i}
+                        href="mailto:info@leadingalpha.io"
+                        variants={variants}
+                        className="hover:text-black"
+                      >
+                        {link}
+                      </motion.a>
+                    );
+                  }
+                  return (
+                    <motion.button
+                      key={i}
+                      onClick={() => scrollToSection(`#${link.toLowerCase()}`)}
+                      variants={variants}
+                      className="hover:text-black bg-transparent border-none self-start cursor-pointer"
+                    >
+                      {link}
+                    </motion.button>
+                  );
+                })}
+              </nav>{" "}
             </div>
 
             {/* Bottom Row */}

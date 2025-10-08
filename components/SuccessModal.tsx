@@ -29,7 +29,7 @@ export default function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
           We’ll email you the next steps shortly.
         </p>
         <button
-          className="mt-4 px-5 py-2 bg-[#CCA435] hover:bg-[#E5E5E5] hover:text-[#CCA435] text-white font-medium rounded-lg shadow-md transition"
+          className="mt-4 hover:bg-white border-[#212121] border-2 hover:text-[#212121] text-white bg-[#212121] px-4 py-2 rounded-lg shadow-md transition"
           onClick={onClose}
         >
           Go back home

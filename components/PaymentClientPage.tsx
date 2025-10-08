@@ -11,6 +11,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import { AiFillDiscord } from "react-icons/ai";
 import stockmarket from "@/public/stock-market.png";
 import logo from "@/public/Full-logo.png";
+import { FaArrowLeft } from "react-icons/fa";
 
 export default function PaymentClientPage({ options }: { options: any }) {
   const router = useRouter();
@@ -45,7 +46,8 @@ export default function PaymentClientPage({ options }: { options: any }) {
             className="flex items-center border border-gray-300 rounded-full px-4 py-2 text-sm text-gray-700 hover:underline"
             onClick={() => router.push("/")}
           >
-            ← Go back to home
+            <FaArrowLeft className="mr-4" />
+            Go back to home
           </button>
           <h3 className="text-2xl text-[#363636] font-semibold text-center">
             Secure Your Place in the Next Cohort

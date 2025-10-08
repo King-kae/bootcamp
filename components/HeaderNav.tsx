@@ -1,15 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, animate } from "framer-motion";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import logo from "@/public/VERTICAL BRANDMARK GREEN 2.png";
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 
 export function HeaderNav() {
   const [isOpen, setIsOpen] = useState(false);
+  const scrollToSection = useSmoothScroll(-80);
 
-  return (
+  // const scrollToSection = (id: string) => {
+  //   const element = document.querySelector(id);
+  //   if (element) {
+  //     const yOffset = -80; // offset for sticky header height
+  //     const targetY =
+  //       element.getBoundingClientRect().top + window.scrollY + yOffset;
+
+  //     animate(window.scrollY, targetY, {
+  //       duration: 0.8,
+  //       ease: [0.25, 0.1, 0.25, 1], // smooth cubic-bezier ease
+  //       onUpdate: (latest) => window.scrollTo(0, latest),
+  //     });
+  //   }
+  // };
+
+ return (
     <>
       <header
         className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/70 border-b border-b-gray-300"
@@ -17,24 +34,30 @@ export function HeaderNav() {
       >
         <div className="mx-auto max-w-7xl px-6 flex h-16 items-center justify-between">
           {/* Logo */}
-          <a href="#top" aria-label="Leading Alpha Home">
+          <a href="/" aria-label="Leading Alpha Home">
             <Image src={logo} alt="Leading Alpha Logo" width={60} height={60} />
           </a>
 
           {/* Desktop Nav */}
-          <nav
-            className="hidden md:flex items-center gap-8 text-sm"
-            aria-label="Main"
-          >
-            <a href="#overview" className="hover:text-slate-700">
+          <nav className="hidden md:flex items-center gap-8 text-sm" aria-label="Main">
+            <button
+              onClick={() => scrollToSection("#overview")}
+              className="hover:text-slate-700"
+            >
               Overview
-            </a>
-            <a href="#timeline" className="hover:text-slate-700">
+            </button>
+            <button
+              onClick={() => scrollToSection("#timeline")}
+              className="hover:text-slate-700"
+            >
               Timeline
-            </a>
-            <a href="#cohort" className="hover:text-slate-700">
+            </button>
+            <button
+              onClick={() => scrollToSection("#cohort")}
+              className="hover:text-slate-700"
+            >
               Cohort
-            </a>
+            </button>
             <a
               href="/reservation"
               className="hover:bg-white border-[#212121] border-2 hover:text-[#212121] text-white bg-[#212121] px-4 py-2 rounded-lg"
@@ -45,16 +68,16 @@ export function HeaderNav() {
 
           {/* Mobile Hamburger */}
           <button
-            className="md:hidden  p-2 rounded-md text-gray-700 hover:bg-gray-100 transition"
+            className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 transition"
             onClick={() => setIsOpen(true)}
             aria-label="Open menu"
           >
             <Menu size={24} />
           </button>
         </div>
-
-        {/* Mobile Drawer */}
       </header>
+
+      {/* Mobile Drawer */}
       <AnimatePresence>
         {isOpen && (
           <>
@@ -78,12 +101,7 @@ export function HeaderNav() {
               className="fixed top-0 right-0 w-64 bg-white shadow-lg z-50 flex flex-col p-6"
             >
               <div className="flex justify-between flex-col-reverse gap-4 items-end mb-4">
-                <Image
-                  src={logo}
-                  alt="Leading Alpha Logo"
-                  width={50}
-                  height={50}
-                />
+                <Image src={logo} alt="Leading Alpha Logo" width={50} height={50} />
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 rounded-md hover:bg-gray-100"
@@ -94,27 +112,33 @@ export function HeaderNav() {
               </div>
 
               <nav className="flex flex-col gap-6 items-end text-sm">
-                <a
-                  href="#overview"
+                <button
+                  onClick={() => {
+                    scrollToSection("#overview");
+                    setIsOpen(false);
+                  }}
                   className="hover:text-slate-700"
-                  onClick={() => setIsOpen(false)}
                 >
                   Overview
-                </a>
-                <a
-                  href="#timeline"
+                </button>
+                <button
+                  onClick={() => {
+                    scrollToSection("#timeline");
+                    setIsOpen(false);
+                  }}
                   className="hover:text-slate-700"
-                  onClick={() => setIsOpen(false)}
                 >
                   Timeline
-                </a>
-                <a
-                  href="#cohort"
+                </button>
+                <button
+                  onClick={() => {
+                    scrollToSection("#cohort");
+                    setIsOpen(false);
+                  }}
                   className="hover:text-slate-700"
-                  onClick={() => setIsOpen(false)}
                 >
                   Cohort
-                </a>
+                </button>
                 <a
                   href="/reservation"
                   onClick={() => setIsOpen(false)}

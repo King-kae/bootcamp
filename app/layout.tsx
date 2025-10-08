@@ -7,8 +7,8 @@ import "./globals.css";
 const circularStd = localFont({
   src: [
     {
-      path: "../public/fonts/circular-std-medium-500.ttf",
-      weight: "400",
+      path: "../public/fonts/CircularStd-Book.ttf",
+      weight: "200",
       style: "normal",
     },
   ],

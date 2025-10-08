@@ -42,7 +42,6 @@ function ReservationForm({ options }: { options: Option[] }) {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>();
-
   const onSubmit = async (data: FormData) => {
     try {
       const [tierName, amountStr] = data.tier.split("|");
@@ -60,30 +59,27 @@ function ReservationForm({ options }: { options: Option[] }) {
 
       const userId = response?.data?._id || response?.data?.id;
 
-      const paystack =
-        (typeof window !== "undefined" && (window as any).PaystackPop) || null;
+      // ✅ Ensure Paystack is available
+      const paystack = (window as any)?.PaystackPop;
+      if (!paystack) {
+        alert("Payment system not loaded. Please refresh and try again.");
+        return;
+      }
 
-      if (paystack && PAYSTACK_PUBLIC_KEY) {
+      if (PAYSTACK_PUBLIC_KEY) {
         const handler = paystack.setup({
-          key: PAYSTACK_PUBLIC_KEY!,
+          key: PAYSTACK_PUBLIC_KEY,
           email: data.email,
           amount: amount * 100,
           currency: "NGN",
           ref: `LA-BC-${Date.now()}`,
-          callback: async (response: any) => {
-            try {
-              await axios.post("/api/users/confirm", {
-                userId,
-                ref: response.reference,
-              });
-              setShowModal(true);
-              reset();
-            } catch (err) {
-              console.error(err);
-              alert("Payment verification failed, please contact support.");
-            }
+
+          // ✅ use plain function, not async
+          callback: function (response: any) {
+            verifyPayment(userId, response.reference);
           },
-          onClose: () => {
+
+          onClose: function () {
             console.log("Paystack modal closed");
           },
         });
@@ -96,12 +92,80 @@ function ReservationForm({ options }: { options: Option[] }) {
     }
   };
 
+  // ✅ Separate async handler for payment verification
+  async function verifyPayment(userId: string, reference: string) {
+    try {
+      await axios.post("/api/users/confirm", { userId, ref: reference });
+      setShowModal(true);
+      reset();
+    } catch (err) {
+      console.error(err);
+      alert("Payment verification failed. Please contact support.");
+    }
+  }
+
+  // const onSubmit = async (data: FormData) => {
+  //   try {
+  //     const [tierName, amountStr] = data.tier.split("|");
+  //     const amount = Number(amountStr);
+
+  //     const response = await axios.post("/api/users", {
+  //       name: `${data.firstName} ${data.lastName}`,
+  //       email: data.email,
+  //       phone: data.phone,
+  //       location: data.location,
+  //       tier: tierName,
+  //       amount,
+  //       paid: false,
+  //     });
+
+  //     const userId = response?.data?._id || response?.data?.id;
+
+  //     const paystack =
+  //       (typeof window !== "undefined" && (window as any).PaystackPop) || null;
+
+  //     if (paystack && PAYSTACK_PUBLIC_KEY) {
+  //       const handler = paystack.setup({
+  //         key: PAYSTACK_PUBLIC_KEY!,
+  //         email: data.email,
+  //         amount: amount * 100,
+  //         currency: "NGN",
+  //         ref: `LA-BC-${Date.now()}`,
+  //         callback: async (response: any) => {
+  //           try {
+  //             await axios.post("/api/users/confirm", {
+  //               userId,
+  //               ref: response.reference,
+  //             });
+  //             setShowModal(true);
+  //             reset();
+  //           } catch (err) {
+  //             console.error(err);
+  //             alert("Payment verification failed, please contact support.");
+  //           }
+  //         },
+  //         onClose: () => {
+  //           console.log("Paystack modal closed");
+  //         },
+  //       });
+
+  //       handler.openIframe();
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Something went wrong. Please try again.");
+  //   }
+  // };
+
   return (
     <div className="mt-10 md:w-[85%] w-full bg-[#FFFFFF80] mx-auto rounded-3xl border border-gray-200 p-6">
-      <SuccessModal isOpen={showModal} onClose={() => {
-        router.push("/")
-        setShowModal(false)
-      }} />
+      <SuccessModal
+        isOpen={showModal}
+        onClose={() => {
+          router.push("/");
+          setShowModal(false);
+        }}
+      />
       <form
         className="mt-8 grid gap-6"
         onSubmit={handleSubmit(onSubmit)}
