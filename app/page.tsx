@@ -597,7 +597,7 @@ export default function BootcampPage() {
               <div className="mt-6 mb-4">
                 <div className="flex items-center mb-4 justify-start text-gray-600 text-sm">
                   <SlCalender className="h-[14px] w-[14px] mr-1" />
-                  <p className="-mb-0.5">Start date</p>
+                  <p className="-mb-[3px]">Start date</p>
                 </div>
                 <p className="mt-1 font-semibold text-gray-900">
                   {session.date}
