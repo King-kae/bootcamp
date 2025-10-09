@@ -43,6 +43,8 @@ function ReservationForm({ options }: { options: Option[] }) {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>();
+
+
   const onSubmit = async (data: FormData) => {
     try {
       const [tierName, amountStr] = data.tier.split("|");
@@ -78,6 +80,7 @@ function ReservationForm({ options }: { options: Option[] }) {
           // ✅ use plain function, not async
           callback: function (response: any) {
             verifyPayment(userId, response.reference);
+            sendConfirmationEmail(data.email, data.firstName);
           },
 
           onClose: function () {
@@ -107,8 +110,20 @@ function ReservationForm({ options }: { options: Option[] }) {
     setVerify(false);
   }
 
+  async function sendConfirmationEmail(email: string, name: string) {
+    try {
+      await axios.post("/api/send-email", {
+        to: email,
+        subject: "Payment Confirmation",
+        name,
+      });
+    } catch (err) {
+      console.error("Error sending confirmation email:", err);
+    }
+  }
+
   return (
-    <div className="mt-10 md:w-[85%] w-full bg-[#FFFFFF80] mx-auto rounded-3xl border border-gray-200 p-6">
+    <div className="mt-10 md:max-w-[56rem] w-full bg-[#FFFFFF80] mx-auto rounded-3xl border border-gray-200 p-6">
       <SuccessModal
         isOpen={showModal}
         onClose={() => {

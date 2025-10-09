@@ -24,6 +24,7 @@ import chart from "@/public/319shots_so 2.png";
 import chart1 from "@/public/742shots_so 1.png";
 import cloud from "@/public/cloud-computing-polygonal-wireframe-technology-concept 1 (1).png";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+import { getRotatingSessions } from "@/libs/utils";
 
 export const CONFIG = {
   cohortDates: "September, 2025",
@@ -90,20 +91,7 @@ const benefits = [
   },
 ];
 
-const sessions = [
-  {
-    month: "October 2025",
-    date: "Saturday, October 4, 2025",
-  },
-  {
-    month: "November 2025",
-    date: "Saturday, November 8, 2025",
-  },
-  {
-    month: "December 2025",
-    date: "Saturday, December 6, 2025",
-  },
-];
+const sessions = getRotatingSessions();
 
 export const THEME = {
   hexPrimary: "#00BFA5", // teal (brand accent)
@@ -121,7 +109,7 @@ export default function BootcampPage() {
     >
       <HeaderNav />
       {/* HERO */}
-      <section className="min-h-screen md:px-32 px-6 flex items-center justify-center bg-white py-6">
+      <section className="md:px-32 px-6 flex items-center justify-center bg-white py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-10">
           {/* Left Section */}
           <motion.div
@@ -685,7 +673,7 @@ export default function BootcampPage() {
                     return (
                       <motion.a
                         key={i}
-                        href="mailto:info@leadingalpha.io"
+                        href="mailto:info@leadingalpha.co"
                         variants={variants}
                         className="hover:text-black"
                       >
@@ -732,7 +720,7 @@ export default function BootcampPage() {
                 >
                   <FaYoutube className="w-5 h-5 hover:text-black" />
                 </a>
-                <a href="#" aria-label="Discord">
+                <a href="https://discord.gg/CFVDGuywWX" aria-label="Discord">
                   <AiFillDiscord className="w-5 h-5 hover:text-black" />
                 </a>
               </div>

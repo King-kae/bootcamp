@@ -10,11 +10,31 @@ import { FaLinkedin, FaYoutube } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { AiFillDiscord } from "react-icons/ai";
 import stockmarket from "@/public/stock-market.png";
-import logo from "@/public/Full-logo.png";
+import logo from "@/public/VERTICAL BRANDMARK GREEN 2.png";
 import { FaArrowLeft } from "react-icons/fa";
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 
 export default function PaymentClientPage({ options }: { options: any }) {
   const router = useRouter();
+  const scrollToSection = useSmoothScroll(-80);
+
+  const handleClick = (id: string) => {
+    if (window.location.pathname === "/") {
+      // Already on home page → just scroll
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      // Navigate to home, then scroll after it loads
+      router.push(`/#${id}`);
+
+      // Wait for route to change and scroll after render
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 500); // small delay to allow render
+    }
+  };
+
+  const links = ["Overview", "Cohort", "Timeline", "Save a spot", "Contact"];
 
   const variants: Variants = {
     hidden: { opacity: 0, y: 20 },
@@ -90,23 +110,42 @@ export default function PaymentClientPage({ options }: { options: any }) {
                 </p>
               </div>
               <nav className="flex gap-6 text-sm text-gray-700 flex-wrap justify-start">
-                {[
-                  "Overview",
-                  "Cohort",
-                  "Timeline",
-                  "Save a spot",
-                  "Contact",
-                ].map((link, i) => (
-                  <motion.a
-                    key={i}
-                    href="#"
-                    variants={variants}
-                    custom={i}
-                    className="hover:text-black"
-                  >
-                    {link}
-                  </motion.a>
-                ))}
+                {links.map((link, i) => {
+                  if (link === "Save a spot") {
+                    return (
+                      <motion.a
+                        key={i}
+                        href="#"
+                        variants={variants}
+                        className="hover:text-black"
+                      >
+                        {link}
+                      </motion.a>
+                    );
+                  }
+                  if (link === "Contact") {
+                    return (
+                      <motion.a
+                        key={i}
+                        href="mailto:info@leadingalpha.co"
+                        variants={variants}
+                        className="hover:text-black"
+                      >
+                        {link}
+                      </motion.a>
+                    );
+                  }
+                  return (
+                    <motion.button
+                      key={i}
+                      onClick={() => handleClick(link.toLowerCase())}
+                      variants={variants}
+                      className="hover:text-black bg-transparent border-none self-start cursor-pointer"
+                    >
+                      {link}
+                    </motion.button>
+                  );
+                })}
               </nav>
             </div>
 
@@ -135,7 +174,7 @@ export default function PaymentClientPage({ options }: { options: any }) {
                 >
                   <FaYoutube className="w-5 h-5 hover:text-black" />
                 </a>
-                <a href="#" aria-label="Discord">
+                <a href="https://discord.gg/CFVDGuywWX" aria-label="Discord">
                   <AiFillDiscord className="w-5 h-5 hover:text-black" />
                 </a>
               </div>
