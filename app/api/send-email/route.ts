@@ -11,15 +11,23 @@ export async function POST(req: Request) {
     : "http://localhost:3000";
 
 
-    const htmlContent = `
-  <div style="margin:0;padding:0;background-color:#f5f6fa;font-family:'Helvetica Neue',Arial,sans-serif;">
-    <table align="center" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width:600px;margin:auto;background:#ffffff;border-radius:10px;overflow:hidden;">
+const htmlContent = `
+  <div style="margin:0;padding:0;border:1px solid #F9FAFB;border-radius:10px;background-color:#F9FAFB;font-family:'Circular Std','Helvetica Neue',Arial,sans-serif;">
+    <style>
+      @import url('https://fonts.cdnfonts.com/css/circular-std');
+    </style>
+
+    <table align="center" width="100%" border="0" cellspacing="0" cellpadding="0"
+      style="max-width:600px;margin:auto;background:#ffffff;border-radius:10px;overflow:hidden;">
+      
       <!-- Header -->
       <tr>
-        <td style="background-color:#111827;padding:20px 30px;color:#ffffff;display:flex;align-items:center;justify-content:space-between;">
-          <div style="display:flex;align-items:center; justify-content:space-between;">
+        <td style="background-color:#111827;padding:20px 30px;color:#ffffff;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
             <img src="${baseUrl}/Layer 1.png" alt="Leading Alpha Logo" style="height:35px;margin-right:10px;" />
-            <span style="font-size:13px;color:#d1d5db;">Systematic trading education & automation</span>
+            <span style="font-size:13px;color:#d1d5db;font-family:'Circular Std','Helvetica Neue',Arial,sans-serif;">
+              Systematic trading education & automation
+            </span>
           </div>
         </td>
       </tr>
@@ -27,23 +35,23 @@ export async function POST(req: Request) {
       <!-- Title -->
       <tr>
         <td style="padding:30px 20px 10px;text-align:center;">
-          <h2 style="font-size:22px;color:#111827;margin:0;">Hello there, you are in!</h2>
+          <h2 style="font-size:22px;color:#111827;margin:0;font-family:'Circular Std','Helvetica Neue',Arial,sans-serif;">
+            Hello there, you are in!
+          </h2>
         </td>
       </tr>
 
       <!-- Hero Image -->
       <tr>
         <td style="text-align:center;padding:0 20px;">
-            <img src="${baseUrl}/Image 3.png"
-               alt="Welcome" 
-               style="width:100%;border-radius:8px;margin:10px 0;object-fit:cover;"
-            />
+          <img src="${baseUrl}/Image 3.png" alt="Welcome"
+            style="width:100%;border-radius:8px;margin:10px 0;object-fit:cover;" />
         </td>
       </tr>
 
       <!-- Body Text -->
       <tr>
-        <td style="padding:10px 20px 0;color:#374151;font-size:15px;line-height:1.6;">
+        <td style="padding:10px 20px 0;color:#374151;font-size:15px;line-height:1.6;font-family:'Circular Std','Helvetica Neue',Arial,sans-serif;">
           <p style="margin:0;">Hi ${name},</p>
           <p style="margin:10px 0;">
             You’ve successfully reserved your seat for the upcoming <strong>Ostivities Event Experience</strong>!
@@ -59,9 +67,10 @@ export async function POST(req: Request) {
 
       <!-- CTA Button -->
       <tr>
-        <td style="padding:20px 0;">
+        <td style="padding:20px;">
           <a href="https://discord.gg/CFVDGuywWX" target="_blank" rel="noopener noreferrer"
-             style="background-color:#16a34a;color:#ffffff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;display:inline-block;">
+            style="background-color:#16a34a;color:#ffffff;padding:14px 28px;border-radius:8px;text-decoration:none;
+                   font-weight:bold;font-size:15px;display:inline-block;font-family:'Circular Std','Helvetica Neue',Arial,sans-serif;">
             Join The Discord Community
           </a>
         </td>
@@ -69,7 +78,8 @@ export async function POST(req: Request) {
 
       <!-- Footer Text -->
       <tr>
-        <td style="padding:0 30px 20px;color:#6b7280;font-size:14px;text-align:center;line-height:1.5;">
+        <td style="padding:0 30px 20px;color:#6b7280;font-size:14px;text-align:center;line-height:1.5;
+                   font-family:'Circular Std','Helvetica Neue',Arial,sans-serif;">
           <p style="margin:0;">
             We’ll be sharing all important announcements, learning resources, and live session links on Discord — don’t miss out!
           </p>
@@ -83,9 +93,9 @@ export async function POST(req: Request) {
 
       <!-- Footer with Socials -->
       <tr>
-        <td style="text-align:center;padding:20px;">
+        <td style="text-align:center;padding:20px;font-family:'Circular Std','Helvetica Neue',Arial,sans-serif;">
           <p style="color:#6b7280;font-size:13px;margin-bottom:10px;">Have questions? Contact us</p>
-          <div>
+          <div style="margin-bottom:10px;">
             <a href="mailto:info@leadingalpha.co" style="margin:0 5px;">
               <img src="${baseUrl}/gmail.png" width="18" alt="Gmail"/>
             </a>
@@ -107,6 +117,7 @@ export async function POST(req: Request) {
           </p>
         </td>
       </tr>
+
     </table>
   </div>
 `;
