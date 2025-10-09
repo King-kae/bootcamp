@@ -54,13 +54,10 @@ const htmlContent = `
         <td style="padding:10px 20px 0;color:#374151;font-size:15px;line-height:1.6;font-family:'Circular Std','Helvetica Neue',Arial,sans-serif;">
           <p style="margin:0;">Hi ${name},</p>
           <p style="margin:10px 0;">
-            You’ve successfully reserved your seat for the upcoming <strong>Ostivities Event Experience</strong>!
+            You’ve successfully reserved your seat for the upcoming Leading Alpha Bootcamp.
           </p>
           <p style="margin:10px 0;">
-            Over the next few weeks, you’ll gain access to exclusive content, resources, and hands-on experiences to help you make the most out of our community events.
-          </p>
-          <p style="margin:10px 0;">
-            To stay updated, connect with other participants, and get exclusive perks, join our community below:
+            Over the next few weeks, you’ll gain practical insights and hands-on experience to help you turn your trading ideas into real automated systems.    
           </p>
         </td>
       </tr>
@@ -142,5 +139,4 @@ try {
   console.error("Brevo send error:", error.response?.text || error);
   return NextResponse.json({ success: false, error }, { status: 500 });
 }
-
 }
