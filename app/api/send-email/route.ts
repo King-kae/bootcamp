@@ -1,14 +1,5 @@
-// app/api/send-email/route.ts
-// app/api/send-email/route.ts (Next.js 13+)
 import { NextResponse } from "next/server";
 import Brevo from "@getbrevo/brevo";
-import hero from "@/public/Image 3.png";
-import logo from "@/public/Layer 1.png";
-import gmail from "@/public/gmail.png";
-import facebook from "@/public/Facebook.png";
-import twitter from "@/public/twitter.png";
-import instagram from "@/public/instagram.png";
-import linkedin from "@/public/linkedin.png";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -26,10 +17,10 @@ export async function POST(req: Request) {
       <!-- Header -->
       <tr>
         <td style="background-color:#111827;padding:20px 30px;color:#ffffff;display:flex;align-items:center;justify-content:space-between;">
-          <div style="display:flex;align-items:center;">
+          <div style="display:flex;align-items:center; justify-content:space-between;">
             <img src="${baseUrl}/Layer 1.png" alt="Leading Alpha Logo" style="height:35px;margin-right:10px;" />
+            <span style="font-size:13px;color:#d1d5db;">Systematic trading education & automation</span>
           </div>
-          <span style="font-size:13px;color:#d1d5db;">Systematic trading education & automation</span>
         </td>
       </tr>
 
@@ -52,7 +43,7 @@ export async function POST(req: Request) {
 
       <!-- Body Text -->
       <tr>
-        <td style="padding:10px 30px 0;color:#374151;font-size:15px;line-height:1.6;">
+        <td style="padding:10px 20px 0;color:#374151;font-size:15px;line-height:1.6;">
           <p style="margin:0;">Hi ${name},</p>
           <p style="margin:10px 0;">
             You’ve successfully reserved your seat for the upcoming <strong>Ostivities Event Experience</strong>!
@@ -68,7 +59,7 @@ export async function POST(req: Request) {
 
       <!-- CTA Button -->
       <tr>
-        <td style="text-align:center;padding:25px 0;">
+        <td style="padding:20px 0;">
           <a href="https://discord.gg/CFVDGuywWX" target="_blank" rel="noopener noreferrer"
              style="background-color:#16a34a;color:#ffffff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;display:inline-block;">
             Join The Discord Community

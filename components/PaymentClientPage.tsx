@@ -138,7 +138,7 @@ export default function PaymentClientPage({ options }: { options: any }) {
                   return (
                     <motion.button
                       key={i}
-                      onClick={() => handleClick(link.toLowerCase())}
+                      onClick={() => router.push("/")}
                       variants={variants}
                       className="hover:text-black bg-transparent border-none self-start cursor-pointer"
                     >
