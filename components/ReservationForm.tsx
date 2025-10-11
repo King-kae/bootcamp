@@ -1,13 +1,13 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, UseFormSetValue } from "react-hook-form";
 import type { Option } from "@/libs/apiCalls";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import SuccessModal from "./SuccessModal";
-import Image from "next/image";
-import Icon from "@/public/Icon.png";
+import FailedModal from "./FailedModal";
 import { useRouter } from "next/navigation";
+import TierSelection from "./TierSelection";
 
 type FormData = {
   firstName: string;
@@ -19,10 +19,11 @@ type FormData = {
   agree: boolean;
 };
 
+
 const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_TEST_PAYSTACK_PUBLIC_KEY;
 
 function ReservationForm({ options }: { options: Option[] }) {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState<"success" | "failed" | null>(null);
   const [verify, setVerify] = useState(false);
   const router = useRouter();
 
@@ -42,8 +43,8 @@ function ReservationForm({ options }: { options: Option[] }) {
     reset,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setValue,
   } = useForm<FormData>();
-
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -101,11 +102,11 @@ function ReservationForm({ options }: { options: Option[] }) {
     setVerify(true);
     try {
       await axios.post("/api/users/confirm", { userId, ref: reference });
-      setShowModal(true);
+      setShowModal("success");
       reset();
     } catch (err) {
       console.error(err);
-      alert("Payment verification failed. Please contact support.");
+      setShowModal("failed");
     }
     setVerify(false);
   }
@@ -123,16 +124,23 @@ function ReservationForm({ options }: { options: Option[] }) {
   }
 
   return (
-    <div className="mt-10 md:max-w-[56rem] w-full bg-[#FFFFFF80] mx-auto rounded-3xl border border-gray-200 p-6">
+    <div className="mt-10 md:max-w-[60rem] w-full bg-[#FFFFFF80] mx-auto rounded-3xl border border-gray-200 md:px-20 px-4 pt-8 pb-16">
       <SuccessModal
-        isOpen={showModal}
+        isOpen={showModal === "success"}
         onClose={() => {
           router.push("/");
-          setShowModal(false);
+          setShowModal(null);
+        }}
+      />
+      <FailedModal
+        isOpen={showModal === "failed"}
+        onClose={() => {
+          router.push("/");
+          setShowModal(null);
         }}
       />
       <form
-        className="mt-8 grid gap-6"
+        className="md:mt-8 grid gap-6"
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
@@ -144,7 +152,7 @@ function ReservationForm({ options }: { options: Option[] }) {
             </label>
             <input
               placeholder="Enter your first name"
-              className="h-12 w-full rounded-xl border border-gray-200 px-3"
+              className="h-12 w-full rounded-xl border bg-[#F9FAFB] border-gray-200 px-3"
               {...register("firstName", { required: "First name is required" })}
             />
             {errors.firstName && (
@@ -159,7 +167,7 @@ function ReservationForm({ options }: { options: Option[] }) {
             </label>
             <input
               placeholder="Enter your last name"
-              className="h-12 w-full rounded-xl border border-gray-200 px-3"
+              className="h-12 w-full rounded-xl border bg-[#F9FAFB] border-gray-200 px-3"
               {...register("lastName", { required: "Last name is required" })}
             />
             {errors.lastName && (
@@ -179,7 +187,7 @@ function ReservationForm({ options }: { options: Option[] }) {
             <input
               type="email"
               placeholder="Enter your email"
-              className="h-12 w-full rounded-xl border border-gray-200 px-3"
+              className="h-12 w-full rounded-xl border bg-[#F9FAFB] border-gray-200 px-3"
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -201,7 +209,7 @@ function ReservationForm({ options }: { options: Option[] }) {
             <input
               type="tel"
               placeholder="Enter your phone number"
-              className="h-12 w-full rounded-xl border border-gray-200 px-3"
+              className="h-12 w-full rounded-xl border bg-[#F9FAFB] border-gray-200 px-3"
               {...register("phone", { required: "Phone number is required" })}
             />
             {errors.phone && (
@@ -224,7 +232,7 @@ function ReservationForm({ options }: { options: Option[] }) {
             render={({ field }) => (
               <select
                 {...field}
-                className="h-12 w-full  text-[#363636] rounded-xl border border-gray-200 px-3"
+                className="h-12 w-full  text-[#363636] rounded-xl border bg-[#F9FAFB] border-gray-200 px-3"
               >
                 <option value="">Select option</option>
                 <option value="Nigeria">Nigeria</option>
@@ -241,63 +249,7 @@ function ReservationForm({ options }: { options: Option[] }) {
         </div>
 
         {/* Tier Selection */}
-        <div>
-          <label className="block text-[#363636] text-sm font-medium mb-2">
-            Select a tier
-          </label>
-          <Controller
-            control={control}
-            name="tier"
-            rules={{ required: "Please select a tier" }}
-            render={({ field }) => (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {options?.map((option) => {
-                  const val = `${option.name}|${option.amount}`;
-                  const isActive = field.value === val;
-                  return (
-                    <div
-                      key={option._id}
-                      onClick={() => field.onChange(val)}
-                      className={`cursor-pointer rounded-lg flex items-start border p-5 ${
-                        isActive
-                          ? "border-black bg-[#9097C01A] text-[#363636]"
-                          : "border-gray-200"
-                      }`}
-                    >
-                      <div>
-                        <p className="font-medium">{option.name}</p>
-                        <p className="text-xl font-bold mt-1">
-                          ₦{Number(option.amount).toLocaleString()}
-                        </p>
-                        <p className="text-sm text-gray-600 mt-2">
-                          {option.name === "Early Bird"
-                            ? "Commit early and save 40%"
-                            : "Get full access at the standard rate"}
-                        </p>
-                        <p className="text-sm text-gray-600 mt-2">
-                          {option.available ? "" : "Sold out"}
-                        </p>
-                      </div>
-                      {isActive && (
-                        <div className="ml-auto flex items-end justify-start">
-                          <Image
-                            src={Icon}
-                            alt="Selected"
-                            width={24}
-                            height={24}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          />
-          {errors.tier && (
-            <p className="mt-1 text-sm text-red-600">{errors.tier.message}</p>
-          )}
-        </div>
+        <TierSelection control={control} errors={errors} setValue={setValue} />
 
         {/* Terms */}
         <div className="flex items-start">
@@ -321,7 +273,7 @@ function ReservationForm({ options }: { options: Option[] }) {
           type="submit"
           disabled={isSubmitting || verify}
         >
-          {(isSubmitting || verify) ? "Processing…" : "Reserve and pay"}
+          {isSubmitting || verify ? "Processing…" : "Reserve and pay"}
         </button>
       </form>
     </div>

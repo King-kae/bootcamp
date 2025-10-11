@@ -104,7 +104,7 @@ export default function BootcampPage() {
   const links = ["Overview", "Cohort", "Timeline", "Save a spot", "Contact"];
   return (
     <div
-      className="min-h-screen bg-white text-slate-900 overflow-hidden"
+      className="min-h-screen bg-white text-slate-900"
       style={{ ["--brand" as any]: THEME.hexPrimary } as React.CSSProperties}
     >
       <HeaderNav />

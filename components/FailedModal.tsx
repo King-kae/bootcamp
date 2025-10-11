@@ -2,15 +2,15 @@
 
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import succcessIcon from "@/public/success-animation-KvcS92JlGQ.png";
+import succcessIcon from "@/public/failed-mKdmNxrLlk.png";
 import Image from "next/image";
 
-interface SuccessModalProps {
+interface FailedModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
+export default function FailedModal({ isOpen, onClose }: FailedModalProps) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden"; // prevent background scroll
@@ -44,11 +44,11 @@ export default function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
           >
             <Image src={succcessIcon} width={85} height={64} alt="Success" />
             <h2 className="text-2xl font-bold text-[#001F3E]">
-              Payment Successful!
+              Payment Failed!
             </h2>
             <p className="mt-2 text-gray-700">
-              Your payment has been received successfully. We will email you
-              the next steps shortly.
+              Something went wrong and we couldn't process your payment. 
+              <br />Please check your payment details and try again.
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -56,7 +56,7 @@ export default function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
               className="mt-4 w-full hover:bg-white hover:text-[#00B044] border-2 border-[#00B044] text-white bg-[#00B044] px-4 py-2 rounded-lg shadow-md transition"
               onClick={onClose}
             >
-              Go back home
+              Try again
             </motion.button>
           </motion.div>
         </motion.div>

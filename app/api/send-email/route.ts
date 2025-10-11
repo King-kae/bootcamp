@@ -75,7 +75,7 @@ const htmlContent = `
 
       <!-- Footer Text -->
       <tr>
-        <td style="padding:0 30px 20px;color:#6b7280;font-size:14px;text-align:center;line-height:1.5;
+        <td style="padding:0 20px 20px;color:#6b7280;font-size:14px;line-height:1.5;
                    font-family:'Circular Std','Helvetica Neue',Arial,sans-serif;">
           <p style="margin:0;">
             We’ll be sharing all important announcements, learning resources, and live session links on Discord — don’t miss out!
@@ -128,7 +128,7 @@ const htmlContent = `
   const email = new Brevo.SendSmtpEmail();
   email.subject = subject;
   email.htmlContent = htmlContent;
-  email.sender = { name: "Your App", email: "kayode.raimi123@gmail.com" };
+  email.sender = { name: "Leading Alpha Bootcamp", email: "info@leadingalpha.co" };
   email.to = [{ email: to }];
 
 try {
