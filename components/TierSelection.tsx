@@ -172,20 +172,20 @@ const TierSelection = ({ control, errors, setValue }: TierSelectionProps) => {
           <div className="space-y-4 p-4 flex justify-between gap-2 border border-gray-200 rounded-xl">
             <div>
               {isEarlyBirdActive ? (
-                <div className="flex md:flex-row flex-col gap-4">
+                <div className="flex flex-col gap-4">
                   <p className="font-semibold text-lg">Early Bird Offer</p>
                   <div className="flex flex-col items-start justify-center gap-4">
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-col md:flex-row items-center gap-4">
                       <p className="line-through text-[#ADADAE] text-3xl font-bold">
                         ₦{trial.amount.toLocaleString()}
                       </p>
                       <p className="text-3xl font-bold">₦150,000</p>
-                      <span className="inline-block bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
+                      <span className="inline-block bg-red-500 text-white self-start md:self-center text-sm px-2 py-1 rounded-full">
                         40% off
                       </span>
                     </div>
                     <div className="flex gap-2">
-                      <Image width={20} height={20} src={star} alt="Star" />
+                      <Image className="max-h-[20px]" width={20} height={20} src={star} alt="Star" />
                       <p className="text-sm text-gray-700">
                         Save ₦100,000 when you register early. Offer ends in{" "}
                         <strong>{remainingDays}</strong> day{remainingDays !== 1 ? "s" : ""}.
@@ -201,12 +201,12 @@ const TierSelection = ({ control, errors, setValue }: TierSelectionProps) => {
                       <p className="text-3xl font-bold text-gray-800">
                         ₦{trial.amount.toLocaleString()}
                       </p>
-                      <p className="inline-block self-center bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
+                      <p className="inline-block self-start md:self-center bg-red-500 text-white text-sm px-2 py-1 rounded-full">
                         Early bird offer has ended
                       </p>
                     </div>
                     <div className="flex gap-2">
-                      <Image width={20} height={20} src={star} alt="Star" />
+                      <Image className="max-h-[20px]" width={20} height={20} src={star} alt="Star" />
                       <p className="text-sm text-gray-700">
                         Get full access at the standard rate.
                       </p>
